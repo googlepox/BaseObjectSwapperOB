@@ -1,0 +1,71 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34004.107
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "common", "..\common\common.vcxproj", "{20C6411C-596F-4B85-BE4E-8BC91F59D8A6}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BaseObjectSwapperOB", "BaseObjectSwapperOB.vcxproj", "{D4DDA734-7E93-4581-8F82-32BB738F69FE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug - Attach Debugger|Win32 = Debug - Attach Debugger|Win32
+		Debug CS|Win32 = Debug CS|Win32
+		Debug ng|Win32 = Debug ng|Win32
+		Debug|Win32 = Debug|Win32
+		Release - No CrashRpt, Attach Debugger|Win32 = Release - No CrashRpt, Attach Debugger|Win32
+		Release - Skip Dev Channel|Win32 = Release - Skip Dev Channel|Win32
+		Release CS|Win32 = Release CS|Win32
+		Release ng|Win32 = Release ng|Win32
+		Release|Win32 = Release|Win32
+		Stewie|Win32 = Stewie|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{20C6411C-596F-4B85-BE4E-8BC91F59D8A6}.Debug - Attach Debugger|Win32.ActiveCfg = Debug|Win32
+		{20C6411C-596F-4B85-BE4E-8BC91F59D8A6}.Debug - Attach Debugger|Win32.Build.0 = Debug|Win32
+		{20C6411C-596F-4B85-BE4E-8BC91F59D8A6}.Debug CS|Win32.ActiveCfg = Debug|Win32
+		{20C6411C-596F-4B85-BE4E-8BC91F59D8A6}.Debug CS|Win32.Build.0 = Debug|Win32
+		{20C6411C-596F-4B85-BE4E-8BC91F59D8A6}.Debug ng|Win32.ActiveCfg = Debug|Win32
+		{20C6411C-596F-4B85-BE4E-8BC91F59D8A6}.Debug ng|Win32.Build.0 = Debug|Win32
+		{20C6411C-596F-4B85-BE4E-8BC91F59D8A6}.Debug|Win32.ActiveCfg = Debug|Win32
+		{20C6411C-596F-4B85-BE4E-8BC91F59D8A6}.Debug|Win32.Build.0 = Debug|Win32
+		{20C6411C-596F-4B85-BE4E-8BC91F59D8A6}.Release - No CrashRpt, Attach Debugger|Win32.ActiveCfg = Release|Win32
+		{20C6411C-596F-4B85-BE4E-8BC91F59D8A6}.Release - No CrashRpt, Attach Debugger|Win32.Build.0 = Release|Win32
+		{20C6411C-596F-4B85-BE4E-8BC91F59D8A6}.Release - Skip Dev Channel|Win32.ActiveCfg = Release|Win32
+		{20C6411C-596F-4B85-BE4E-8BC91F59D8A6}.Release - Skip Dev Channel|Win32.Build.0 = Release|Win32
+		{20C6411C-596F-4B85-BE4E-8BC91F59D8A6}.Release CS|Win32.ActiveCfg = Release|Win32
+		{20C6411C-596F-4B85-BE4E-8BC91F59D8A6}.Release CS|Win32.Build.0 = Release|Win32
+		{20C6411C-596F-4B85-BE4E-8BC91F59D8A6}.Release ng|Win32.ActiveCfg = Release|Win32
+		{20C6411C-596F-4B85-BE4E-8BC91F59D8A6}.Release ng|Win32.Build.0 = Release|Win32
+		{20C6411C-596F-4B85-BE4E-8BC91F59D8A6}.Release|Win32.ActiveCfg = Release|Win32
+		{20C6411C-596F-4B85-BE4E-8BC91F59D8A6}.Release|Win32.Build.0 = Release|Win32
+		{20C6411C-596F-4B85-BE4E-8BC91F59D8A6}.Stewie|Win32.ActiveCfg = Release|Win32
+		{20C6411C-596F-4B85-BE4E-8BC91F59D8A6}.Stewie|Win32.Build.0 = Release|Win32
+		{D4DDA734-7E93-4581-8F82-32BB738F69FE}.Debug - Attach Debugger|Win32.ActiveCfg = Debug|Win32
+		{D4DDA734-7E93-4581-8F82-32BB738F69FE}.Debug - Attach Debugger|Win32.Build.0 = Debug|Win32
+		{D4DDA734-7E93-4581-8F82-32BB738F69FE}.Debug CS|Win32.ActiveCfg = Debug|Win32
+		{D4DDA734-7E93-4581-8F82-32BB738F69FE}.Debug CS|Win32.Build.0 = Debug|Win32
+		{D4DDA734-7E93-4581-8F82-32BB738F69FE}.Debug ng|Win32.ActiveCfg = Debug|Win32
+		{D4DDA734-7E93-4581-8F82-32BB738F69FE}.Debug ng|Win32.Build.0 = Debug|Win32
+		{D4DDA734-7E93-4581-8F82-32BB738F69FE}.Debug|Win32.ActiveCfg = Debug|Win32
+		{D4DDA734-7E93-4581-8F82-32BB738F69FE}.Debug|Win32.Build.0 = Debug|Win32
+		{D4DDA734-7E93-4581-8F82-32BB738F69FE}.Release - No CrashRpt, Attach Debugger|Win32.ActiveCfg = Release|Win32
+		{D4DDA734-7E93-4581-8F82-32BB738F69FE}.Release - No CrashRpt, Attach Debugger|Win32.Build.0 = Release|Win32
+		{D4DDA734-7E93-4581-8F82-32BB738F69FE}.Release - Skip Dev Channel|Win32.ActiveCfg = Release|Win32
+		{D4DDA734-7E93-4581-8F82-32BB738F69FE}.Release - Skip Dev Channel|Win32.Build.0 = Release|Win32
+		{D4DDA734-7E93-4581-8F82-32BB738F69FE}.Release CS|Win32.ActiveCfg = Release|Win32
+		{D4DDA734-7E93-4581-8F82-32BB738F69FE}.Release CS|Win32.Build.0 = Release|Win32
+		{D4DDA734-7E93-4581-8F82-32BB738F69FE}.Release ng|Win32.ActiveCfg = Release|Win32
+		{D4DDA734-7E93-4581-8F82-32BB738F69FE}.Release ng|Win32.Build.0 = Release|Win32
+		{D4DDA734-7E93-4581-8F82-32BB738F69FE}.Release|Win32.ActiveCfg = Release|Win32
+		{D4DDA734-7E93-4581-8F82-32BB738F69FE}.Release|Win32.Build.0 = Release|Win32
+		{D4DDA734-7E93-4581-8F82-32BB738F69FE}.Stewie|Win32.ActiveCfg = Debug|Win32
+		{D4DDA734-7E93-4581-8F82-32BB738F69FE}.Stewie|Win32.Build.0 = Debug|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {FD52C8FE-9C37-4FC6-82FA-453070585327}
+	EndGlobalSection
+EndGlobal
