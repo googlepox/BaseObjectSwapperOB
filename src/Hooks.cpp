@@ -3,38 +3,88 @@
 
 namespace BaseObjectSwapper
 {
-	struct InitItemImpl
+	struct LoadFormREFRImpl
 	{
-		static void __fastcall thunk(TESObjectREFR* a_ref, void* esp)
+		static void __fastcall LoadFormHook(TESObjectREFR* a_ref, void* edx, ModEntry::Data* tesFile)
 		{
+			ThisStdCall(originalAddress, a_ref, tesFile);
 			if (const auto base = a_ref->baseForm) {
 				Manager::GetSingleton()->LoadFormsOnce();
 				const auto& [swapBase, transformData] = Manager::GetSingleton()->GetSwapData(a_ref, base);
 				if (swapBase && swapBase != base) {
-					//a_ref->InitBaseForm(swapBase);
 					a_ref->baseForm = swapBase;
 				}
-
-				if (transformData) {
+				if (transformData != std::nullopt) {
 					transformData->SetTransform(a_ref);
 				}
 			}
-			return ThisStdCallNew<void>(originalAddress, a_ref);
 		}
 		static inline std::uint32_t originalAddress;
 
 		static void Install()
 		{
-			originalAddress = DetourVtable(0xA46C48 + (4 * 0x5B), reinterpret_cast<UInt32>(thunk)); // kVtbl_TESObjectREFR
+			originalAddress = DetourVtable(0xA46C60, reinterpret_cast<UInt32>(LoadFormHook)); // kVtbl_TESObjectREFR_LoadForm
+			_MESSAGE("Installed TESObjectREFR vtable hook");
+		}
+	};
 
-			_MESSAGE("Installed vtable hook");
+	//not implemented
+	struct LoadFormNPCImpl
+	{
+		static void __fastcall LoadFormHook(TESObjectREFR* a_ref, void* edx, ModEntry::Data* tesFile)
+		{
+			ThisStdCall(originalAddress, a_ref, tesFile);
+			if (const auto base = a_ref->baseForm) {
+				Manager::GetSingleton()->LoadFormsOnce();
+				const auto& [swapBase, transformData] = Manager::GetSingleton()->GetSwapData(a_ref, base);
+				if (swapBase && swapBase != base) {
+					a_ref->baseForm = swapBase;
+				}
+				if (transformData != std::nullopt) {
+					transformData->SetTransform(a_ref);
+				}
+			}
+		}
+		static inline std::uint32_t originalAddress;
+
+		static void Install()
+		{
+			originalAddress = DetourVtable(0xA6FCB8, reinterpret_cast<UInt32>(LoadFormHook)); // kVtbl_Character_LoadForm
+			_MESSAGE("Installed Character vtable hook");
+		}
+	};
+
+	//not implemented
+	struct LoadFormCREAImpl
+	{
+		static void __fastcall LoadFormHook(TESObjectREFR* a_ref, void* edx, ModEntry::Data* tesFile)
+		{
+			ThisStdCall(originalAddress, a_ref, tesFile);
+			if (const auto base = a_ref->baseForm) {
+				Manager::GetSingleton()->LoadFormsOnce();
+				const auto& [swapBase, transformData] = Manager::GetSingleton()->GetSwapData(a_ref, base);
+				if (swapBase && swapBase != base) {
+					a_ref->baseForm = swapBase;
+				}
+				if (transformData != std::nullopt) {
+					transformData->SetTransform(a_ref);
+				}
+			}
+		}
+		static inline std::uint32_t originalAddress;
+
+		static void Install()
+		{
+			originalAddress = DetourVtable(0xA71110, reinterpret_cast<UInt32>(LoadFormHook)); // kVtbl_Creature_LoadForm
+			_MESSAGE("Installed Creature vtable hook");
 		}
 	};
 
 	void Install()
 	{
 		_MESSAGE("-HOOKS-");
+		LoadFormREFRImpl::Install();
+		_MESSAGE("Installed all vtable hooks");
 
-		InitItemImpl::Install();
 	}
 }
