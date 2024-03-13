@@ -26,10 +26,9 @@ namespace BaseObjectSwapper
 		void SetTransform(TESObjectREFR* a_refr) const;
 		bool IsValid() const;
 
-
 		bool operator==(Transform const& a_rhs) const
 		{
-			return location && a_rhs.location || rotation && a_rhs.rotation || refScale && a_rhs.refScale;
+			return location && a_rhs.location || rotation && a_rhs.rotation || refScale && a_rhs.refScale || refDisable && a_rhs.refDisable;
 		}
 
 	private:
@@ -53,6 +52,7 @@ namespace BaseObjectSwapper
 		std::optional<RelData<NiPoint3>> location{ std::nullopt };
 		std::optional<RelData<NiPoint3>> rotation{ std::nullopt };
 		std::optional<MinMax<float>>         refScale{ std::nullopt };
+		std::optional<bool>         refDisable{ std::nullopt };
 
 		bool useTrueRandom{ false };
 

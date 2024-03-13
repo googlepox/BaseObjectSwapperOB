@@ -28,7 +28,6 @@ namespace BaseObjectSwapper
 		}
 	};
 
-	//not implemented
 	struct LoadFormNPCImpl
 	{
 		static void __fastcall LoadFormHook(TESObjectREFR* a_ref, void* edx, ModEntry::Data* tesFile)
@@ -54,7 +53,6 @@ namespace BaseObjectSwapper
 		}
 	};
 
-	//not implemented
 	struct LoadFormCREAImpl
 	{
 		static void __fastcall LoadFormHook(TESObjectREFR* a_ref, void* edx, ModEntry::Data* tesFile)
@@ -84,7 +82,9 @@ namespace BaseObjectSwapper
 	{
 		_MESSAGE("-HOOKS-");
 		LoadFormREFRImpl::Install();
-		_MESSAGE("Installed all vtable hooks");
+		//LoadFormNPCImpl::Install(); not implemented
+		//LoadFormCREAImpl::Install(); not implemented
+		//_MESSAGE("Installed all vtable hooks");
 
 	}
 }

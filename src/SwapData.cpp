@@ -135,13 +135,16 @@ namespace BaseObjectSwapper
 				else if (transformStr.contains("scale")) {
 					refScale = get_scale_from_string(transformStr);
 				}
+				else if (transformStr.contains("disable")) {
+					refDisable = true;
+				}
 			}
 		}
 	}
 
 	void Transform::SetTransform(TESObjectREFR* a_refr) const
 	{
-		if (location || rotation || refScale) {
+		if (location || rotation || refScale || refDisable) {
 			Input input(useTrueRandom, a_refr->refID);
 			if (location) {
 				auto& [relative, minMax] = *location;
@@ -183,12 +186,23 @@ namespace BaseObjectSwapper
 				auto& [min, max] = *refScale;
 				a_refr->scale = a_refr->scale * get_random_value(input, min, max);
 			}
+			if (refDisable) {
+				if (a_refr->baseExtraList.HasType(kExtraData_EnableStateParent) || a_refr->baseExtraList.HasType(kExtraData_EnableStateChildren)) {
+					//_MESSAGE("skipping disable as reference has EnableStateParent flag");
+				}
+				else if (a_refr->IsPersistent()) {
+					//_MESSAGE("skipping disable as reference is flagged as Persistent");
+				}
+				else {
+					a_refr->SetDisabled(true);
+				}
+			}
 		}
 	}
 
 	bool Transform::IsValid() const
 	{
-		return location || rotation || refScale;
+		return location || rotation || refScale || refDisable;
 	}
 
 	TransformData::TransformData(const Input& a_input) :
@@ -226,6 +240,7 @@ namespace BaseObjectSwapper
 				return form->refID;
 			}
 		}
+
 		/*if (const auto form = GetFormIDFromEditorID(a_str.c_str())) {
 			return form;
 		}
@@ -252,6 +267,7 @@ namespace BaseObjectSwapper
 
 	bool TransformData::IsTransformValid(const TESObjectREFR* a_ref) const
 	{
+
 		if (traits.chance != 100) {
 			const auto rng = traits.trueRandom ? SeedRNG().Generate<std::uint32_t>(0, 100) :
 				SeedRNG(static_cast<std::uint32_t>(a_ref->refID)).Generate<std::uint32_t>(0, 100);
