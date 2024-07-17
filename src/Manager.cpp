@@ -372,7 +372,6 @@ namespace BaseObjectSwapper
 		if (!has_transform(swapData.second)) {
 			swapData.second = get_transform(a_base);
 		}
-
 		return swapData;
 	}
 }
