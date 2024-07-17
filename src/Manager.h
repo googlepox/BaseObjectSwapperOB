@@ -59,6 +59,7 @@ namespace BaseObjectSwapper
 		void                  get_forms(const std::string& a_path, const std::string& a_str, const std::vector<FormIDStr>& a_conditionalIDs);
 		void                  get_transforms(const std::string& a_path, const std::string& a_str);
 		void                  get_transforms(const std::string& a_path, const std::string& a_str, const std::vector<FormIDStr>& a_conditionalIDs);
+
 		// members
 		SwapMap<SwapDataVec>         swapForms{};
 		SwapMap<SwapDataVec>         swapRefs{};

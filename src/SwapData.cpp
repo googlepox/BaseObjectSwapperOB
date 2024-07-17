@@ -317,11 +317,9 @@ namespace BaseObjectSwapper
 		}
 		else {  // return random element from set
 			auto& set = std::get<FormIDSet>(formIDSet);
-
 			const auto setEnd = std::distance(set.begin(), set.end()) - 1;
 			const auto randIt = traits.trueRandom ? SeedRNG().Generate<std::int64_t>(0, setEnd) :
 				seededRNG.Generate<std::int64_t>(0, setEnd);
-
 			return static_cast<TESBoundObject*>(LookupFormByID(*std::next(set.begin(), randIt)));
 		}
 	}
