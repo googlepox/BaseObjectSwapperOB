@@ -22,7 +22,7 @@
 #include "lib/numeric.hpp"
 #include "lib/simpleINI.hpp"
 
-#include "srell.hpp"
+#include "lib/srell.hpp"
 #include "NiPoint.h"
 
 namespace string = clib_util::string;

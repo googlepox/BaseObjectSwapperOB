@@ -45,7 +45,8 @@ namespace BaseObjectSwapper
 	}
 
 	bool HasKeyword(TESForm* a_form, const std::string& a_keyword)
-	{
+	{ 
+	/*
 		if (!HasKeywordScript)
 		{
 			HasKeywordScript = g_script->CompileScript(
@@ -58,6 +59,8 @@ namespace BaseObjectSwapper
 		g_script->CallFunction(HasKeywordScript, nullptr, nullptr, &result, 2, a_form, a_keyword.c_str());
 
 		return result.Number() != 0.0;
+	*/
+		return false;
 	}
 
 	bool ConditionalInput::IsValid(const FormIDStr& a_data) const

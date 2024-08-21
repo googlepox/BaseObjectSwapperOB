@@ -53,6 +53,31 @@ namespace BaseObjectSwapper
 		}
 	};
 
+	struct LoadFormLevNPCImpl
+	{
+		static void __fastcall LoadFormHook(TESObjectREFR* a_ref, void* edx, ModEntry::Data* tesFile)
+		{
+			ThisStdCall(originalAddress, a_ref, tesFile);
+			if (const auto base = a_ref->baseForm) {
+				Manager::GetSingleton()->LoadFormsOnce();
+				const auto& [swapBase, transformData] = Manager::GetSingleton()->GetSwapData(a_ref, base);
+				if (swapBase && swapBase != base) {
+					a_ref->baseForm = swapBase;
+				}
+				if (transformData != std::nullopt) {
+					transformData->SetTransform(a_ref);
+				}
+			}
+		}
+		static inline std::uint32_t originalAddress;
+
+		static void Install()
+		{
+			originalAddress = DetourVtable(0xA6FCB8, reinterpret_cast<UInt32>(LoadFormHook)); // kVtbl_Character_LoadForm
+			_MESSAGE("Installed Leveled Character vtable hook");
+		}
+	};
+
 	struct LoadFormCREAImpl
 	{
 		static void __fastcall LoadFormHook(TESObjectREFR* a_ref, void* edx, ModEntry::Data* tesFile)
@@ -78,13 +103,48 @@ namespace BaseObjectSwapper
 		}
 	};
 
+	struct LoadFormLevCREAImpl
+	{
+		static void __fastcall LoadFormHook(TESObjectREFR* a_ref, void* edx, ModEntry::Data* tesFile)
+		{
+			ThisStdCall(originalAddress, a_ref, tesFile);
+			if (const auto base = a_ref->baseForm) {
+				Manager::GetSingleton()->LoadFormsOnce();
+				const auto& [swapBase, transformData] = Manager::GetSingleton()->GetSwapData(a_ref, base);
+				if (swapBase && swapBase != base) {
+					a_ref->baseForm = swapBase;
+				}
+				if (transformData != std::nullopt) {
+					transformData->SetTransform(a_ref);
+				}
+			}
+		}
+		static inline std::uint32_t originalAddress;
+
+		static void Install()
+		{
+			originalAddress = DetourVtable(0xA42BB8, reinterpret_cast<UInt32>(LoadFormHook)); // kVtbl_TESLevCreature_LoadForm
+			_MESSAGE("Installed Leveled Creature vtable hook");
+		}
+	};
+
+	// Credits to lStewieAl
+	[[nodiscard]] __declspec(noinline) UInt32 __stdcall DetourVtable(UInt32 addr, UInt32 dst)
+	{
+		UInt32 originalFunction = *(UInt32*)addr;
+		SafeWrite32(addr, dst);
+		return originalFunction;
+	}
+
 	void Install()
 	{
 		_MESSAGE("-HOOKS-");
 		LoadFormREFRImpl::Install();
-		//LoadFormNPCImpl::Install(); not implemented
-		//LoadFormCREAImpl::Install(); not implemented
-		//_MESSAGE("Installed all vtable hooks");
+		LoadFormNPCImpl::Install();
+		//LoadFormLevNPCImpl::Install();
+		LoadFormCREAImpl::Install();
+		//LoadFormLevCREAImpl::Install();
+		_MESSAGE("Installed all vtable hooks");
 
 	}
 }

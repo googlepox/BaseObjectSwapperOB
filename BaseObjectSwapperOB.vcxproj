@@ -163,6 +163,7 @@
     <ClInclude Include="lib\numeric.hpp" />
     <ClInclude Include="lib\rng.hpp" />
     <ClInclude Include="lib\simpleINI.hpp" />
+    <ClInclude Include="lib\srell.hpp" />
     <ClInclude Include="lib\string.hpp" />
     <ClInclude Include="NiPoint.h" />
     <ClInclude Include="src\Defs.h" />

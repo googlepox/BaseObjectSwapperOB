@@ -133,6 +133,9 @@
     <ClInclude Include="..\obse\obse\ParamInfos.h">
       <Filter>obse</Filter>
     </ClInclude>
+    <ClInclude Include="lib\srell.hpp">
+      <Filter>lib</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="exports.def" />
