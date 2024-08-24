@@ -1,5 +1,4 @@
 #include "SwapData.h"
-#include "Hooks.h"
 
 #define DEGTORAD 0.01745329252f
 
@@ -240,11 +239,10 @@ namespace BaseObjectSwapper
 				return form->refID;
 			}
 		}
-
-		/*if (const auto form = GetFormIDFromEditorID(a_str.c_str())) {
-			return form;
-		}
-		return 0;*/
+		/*if (const auto form = GetFormByID(a_str.c_str())) {
+			return form->refID;
+		} */
+		return 0;
 	}
 
 	void TransformData::GetTransforms(const std::string& a_path, const std::string& a_str, std::function<void(std::uint32_t, TransformData&)> a_func)
@@ -267,7 +265,6 @@ namespace BaseObjectSwapper
 
 	bool TransformData::IsTransformValid(const TESObjectREFR* a_ref) const
 	{
-
 		if (traits.chance != 100) {
 			const auto rng = traits.trueRandom ? SeedRNG().Generate<std::uint32_t>(0, 100) :
 				SeedRNG(static_cast<std::uint32_t>(a_ref->refID)).Generate<std::uint32_t>(0, 100);
@@ -317,9 +314,11 @@ namespace BaseObjectSwapper
 		}
 		else {  // return random element from set
 			auto& set = std::get<FormIDSet>(formIDSet);
+
 			const auto setEnd = std::distance(set.begin(), set.end()) - 1;
 			const auto randIt = traits.trueRandom ? SeedRNG().Generate<std::int64_t>(0, setEnd) :
 				seededRNG.Generate<std::int64_t>(0, setEnd);
+
 			return static_cast<TESBoundObject*>(LookupFormByID(*std::next(set.begin(), randIt)));
 		}
 	}

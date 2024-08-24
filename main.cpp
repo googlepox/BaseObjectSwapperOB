@@ -25,19 +25,7 @@ void MessageHandler(OBSEMessagingInterface::Message* msg)
 {
 	switch (msg->type)
 	{
-	case OBSEMessagingInterface::kMessage_PostLoad: break;
-	case OBSEMessagingInterface::kMessage_ExitGame: break;
-	case OBSEMessagingInterface::kMessage_ExitToMainMenu: break;
-	case OBSEMessagingInterface::kMessage_LoadGame: break;
-	case OBSEMessagingInterface::kMessage_SaveGame: break;
-#if EDITOR
-	case OBSEMessagingInterface::kMessage_ScriptEditorPrecompile: break;
-#endif
-	case OBSEMessagingInterface::kMessage_PreLoadGame: break;
-	case OBSEMessagingInterface::kMessage_ExitGame_Console: break;
-	case OBSEMessagingInterface::kMessage_PostLoadGame: break;
-	case OBSEMessagingInterface::kMessage_PostPostLoad: break;
-	case OBSEMessagingInterface::kMessage_RuntimeScriptError: break;
+	case OBSEMessagingInterface::kMessage_GameInitialized: break;
 	default: break;
 	}
 }

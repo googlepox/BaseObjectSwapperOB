@@ -1,6 +1,5 @@
 #pragma once
 
-#include <functional>
 #include "Defs.h"
 
 namespace BaseObjectSwapper

@@ -1,9 +1,6 @@
 #include "Manager.h"
-#include <string>
 
-#if OBLIVION
 extern OBSEScriptInterface* g_script;
-#endif
 
 namespace BaseObjectSwapper
 {
@@ -44,30 +41,31 @@ namespace BaseObjectSwapper
 			});
 	}
 
-	bool HasKeyword(TESForm* a_form, const std::string& a_keyword)
-	{ 
-	/*
-		if (!HasKeywordScript)
-		{
-			HasKeywordScript = g_script->CompileScript(
-				R"(Begin Function { Ref akForm, string_var asKeyword }
-					SetFunctionValue (HasKeyword akForm (asKeyword))
-				End)");
+	bool HasKeyword(TESObjectCELL* a_cell, const std::string& a_keyword)
+	{
+		if (a_cell) {
+			std::string editorID = (a_cell->GetEditorID2());
+			std::string newKey = a_keyword;
+			std::transform(newKey.begin(), newKey.end(), newKey.begin(), tolower);
+			std::transform(editorID.begin(), editorID.end(), editorID.begin(), tolower);
+			std::string cStrKey = newKey.c_str();
+			std::string cStrEditorID = editorID.c_str();
+			if ((cStrEditorID.find(cStrKey.c_str()) != std::string::npos) && (cStrKey.find('-') == std::string::npos)) {
+				return true;
+			}
+			return false;
+		}
+		else {
+			return false;
 		}
 
-		OBSEArrayVarInterface::Element result;
-		g_script->CallFunction(HasKeywordScript, nullptr, nullptr, &result, 2, a_form, a_keyword.c_str());
-
-		return result.Number() != 0.0;
-	*/
-		return false;
 	}
 
 	bool ConditionalInput::IsValid(const FormIDStr& a_data) const
 	{
 		if (std::holds_alternative<RE::FormID>(a_data)) {
 			if (const auto form = LookupFormByID(std::get<RE::FormID>(a_data))) {
-				switch (form->typeID) {
+				switch (form->GetFormType()) {
 				case kFormType_Region:
 				{
 					if (const auto region = (form)) {
@@ -98,7 +96,7 @@ namespace BaseObjectSwapper
 			}
 		}
 		else {
-			return HasKeyword(ref, std::get<std::string>(a_data));
+			return HasKeyword(currentCell, std::get<std::string>(a_data));
 		}
 		return false;
 	}
@@ -348,7 +346,6 @@ namespace BaseObjectSwapper
 			};
 
 		SwapResult swapData{ nullptr, std::nullopt };
-
 
 		// get base
 		if (a_ref->refID < 0xFF000000) {

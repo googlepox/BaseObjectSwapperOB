@@ -3,11 +3,10 @@
 
 namespace BaseObjectSwapper
 {
-	struct LoadFormREFRImpl
+	struct LinkFormREFRImpl
 	{
-		static void __fastcall LoadFormHook(TESObjectREFR* a_ref, void* edx, ModEntry::Data* tesFile)
+		static void __fastcall LinkFormHook(TESObjectREFR* a_ref, void* edx)
 		{
-			ThisStdCall(originalAddress, a_ref, tesFile);
 			if (const auto base = a_ref->baseForm) {
 				Manager::GetSingleton()->LoadFormsOnce();
 				const auto& [swapBase, transformData] = Manager::GetSingleton()->GetSwapData(a_ref, base);
@@ -18,21 +17,21 @@ namespace BaseObjectSwapper
 					transformData->SetTransform(a_ref);
 				}
 			}
+			ThisStdCall(originalAddress, a_ref);
 		}
 		static inline std::uint32_t originalAddress;
 
 		static void Install()
 		{
-			originalAddress = DetourVtable(0xA46C60, reinterpret_cast<UInt32>(LoadFormHook)); // kVtbl_TESObjectREFR_LoadForm
+			originalAddress = DetourVtable(0xA46CB0, reinterpret_cast<UInt32>(LinkFormHook)); // kVtbl_TESObjectREFR_LinkForm
 			_MESSAGE("Installed TESObjectREFR vtable hook");
 		}
 	};
 
-	struct LoadFormNPCImpl
+	struct LinkFormNPCImpl
 	{
-		static void __fastcall LoadFormHook(TESObjectREFR* a_ref, void* edx, ModEntry::Data* tesFile)
+		static void __fastcall LinkFormHook(TESObjectREFR* a_ref, void* edx)
 		{
-			ThisStdCall(originalAddress, a_ref, tesFile);
 			if (const auto base = a_ref->baseForm) {
 				Manager::GetSingleton()->LoadFormsOnce();
 				const auto& [swapBase, transformData] = Manager::GetSingleton()->GetSwapData(a_ref, base);
@@ -43,21 +42,21 @@ namespace BaseObjectSwapper
 					transformData->SetTransform(a_ref);
 				}
 			}
+			ThisStdCall(originalAddress, a_ref);
 		}
 		static inline std::uint32_t originalAddress;
 
 		static void Install()
 		{
-			originalAddress = DetourVtable(0xA6FCB8, reinterpret_cast<UInt32>(LoadFormHook)); // kVtbl_Character_LoadForm
+			originalAddress = DetourVtable(0xA6FD08, reinterpret_cast<UInt32>(LinkFormHook)); // kVtbl_Character_LinkForm
 			_MESSAGE("Installed Character vtable hook");
 		}
 	};
 
-	struct LoadFormLevNPCImpl
+	struct LinkFormCREAImpl
 	{
-		static void __fastcall LoadFormHook(TESObjectREFR* a_ref, void* edx, ModEntry::Data* tesFile)
+		static void __fastcall LinkFormHook(TESObjectREFR* a_ref, void* edx)
 		{
-			ThisStdCall(originalAddress, a_ref, tesFile);
 			if (const auto base = a_ref->baseForm) {
 				Manager::GetSingleton()->LoadFormsOnce();
 				const auto& [swapBase, transformData] = Manager::GetSingleton()->GetSwapData(a_ref, base);
@@ -68,63 +67,14 @@ namespace BaseObjectSwapper
 					transformData->SetTransform(a_ref);
 				}
 			}
+			ThisStdCall(originalAddress, a_ref);
 		}
 		static inline std::uint32_t originalAddress;
 
 		static void Install()
 		{
-			originalAddress = DetourVtable(0xA6FCB8, reinterpret_cast<UInt32>(LoadFormHook)); // kVtbl_Character_LoadForm
-			_MESSAGE("Installed Leveled Character vtable hook");
-		}
-	};
-
-	struct LoadFormCREAImpl
-	{
-		static void __fastcall LoadFormHook(TESObjectREFR* a_ref, void* edx, ModEntry::Data* tesFile)
-		{
-			ThisStdCall(originalAddress, a_ref, tesFile);
-			if (const auto base = a_ref->baseForm) {
-				Manager::GetSingleton()->LoadFormsOnce();
-				const auto& [swapBase, transformData] = Manager::GetSingleton()->GetSwapData(a_ref, base);
-				if (swapBase && swapBase != base) {
-					a_ref->baseForm = swapBase;
-				}
-				if (transformData != std::nullopt) {
-					transformData->SetTransform(a_ref);
-				}
-			}
-		}
-		static inline std::uint32_t originalAddress;
-
-		static void Install()
-		{
-			originalAddress = DetourVtable(0xA71110, reinterpret_cast<UInt32>(LoadFormHook)); // kVtbl_Creature_LoadForm
+			originalAddress = DetourVtable(0xA71160, reinterpret_cast<UInt32>(LinkFormHook)); // kVtbl_Creature_LinkForm
 			_MESSAGE("Installed Creature vtable hook");
-		}
-	};
-
-	struct LoadFormLevCREAImpl
-	{
-		static void __fastcall LoadFormHook(TESObjectREFR* a_ref, void* edx, ModEntry::Data* tesFile)
-		{
-			ThisStdCall(originalAddress, a_ref, tesFile);
-			if (const auto base = a_ref->baseForm) {
-				Manager::GetSingleton()->LoadFormsOnce();
-				const auto& [swapBase, transformData] = Manager::GetSingleton()->GetSwapData(a_ref, base);
-				if (swapBase && swapBase != base) {
-					a_ref->baseForm = swapBase;
-				}
-				if (transformData != std::nullopt) {
-					transformData->SetTransform(a_ref);
-				}
-			}
-		}
-		static inline std::uint32_t originalAddress;
-
-		static void Install()
-		{
-			originalAddress = DetourVtable(0xA42BB8, reinterpret_cast<UInt32>(LoadFormHook)); // kVtbl_TESLevCreature_LoadForm
-			_MESSAGE("Installed Leveled Creature vtable hook");
 		}
 	};
 
@@ -139,11 +89,9 @@ namespace BaseObjectSwapper
 	void Install()
 	{
 		_MESSAGE("-HOOKS-");
-		LoadFormREFRImpl::Install();
-		LoadFormNPCImpl::Install();
-		//LoadFormLevNPCImpl::Install();
-		LoadFormCREAImpl::Install();
-		//LoadFormLevCREAImpl::Install();
+		LinkFormREFRImpl::Install();
+		LinkFormNPCImpl::Install();
+		LinkFormCREAImpl::Install();
 		_MESSAGE("Installed all vtable hooks");
 
 	}

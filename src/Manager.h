@@ -5,7 +5,7 @@
 namespace BaseObjectSwapper
 {
 	inline Script* HasKeywordScript;
-	[[nodiscard]] bool HasKeyword(TESForm* a_form, const std::string& a_keyword);
+	[[nodiscard]] bool HasKeyword(TESObjectCELL* a_cell, const std::string& a_keyword);
 
 	struct ConditionalInput
 	{
