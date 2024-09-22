@@ -79,6 +79,18 @@ namespace BaseObjectSwapper
 		return MinMax<float>{ 0.0f, 0.0f };
 	}
 
+	std::string Transform::get_path_from_string(const std::string& a_str)
+	{
+		srell::cmatch match;
+		if (srell::regex_search(a_str.c_str(), match, genericRegex)) {
+			//_MESSAGE("original string: %s", a_str.c_str());
+			//_MESSAGE("match string: %s", match[1].str().c_str());
+			return match[1].str();
+		}
+
+		return "";
+	}
+
 	float Transform::get_random_value(const Input& a_input, float a_min, float a_max)
 	{
 		float value = a_min;
@@ -137,13 +149,18 @@ namespace BaseObjectSwapper
 				else if (transformStr.contains("disable")) {
 					refDisable = true;
 				}
+				else if (transformStr.contains("model")) {
+					_MESSAGE("transformStr: %s", transformStr.c_str());
+					modelSwap = true;
+					modelPath = get_path_from_string(transformStr);
+				}
 			}
 		}
 	}
 
 	void Transform::SetTransform(TESObjectREFR* a_refr) const
 	{
-		if (location || rotation || refScale || refDisable) {
+		if (location || rotation || refScale || refDisable || modelSwap) {
 			Input input(useTrueRandom, a_refr->refID);
 			if (location) {
 				auto& [relative, minMax] = *location;
@@ -196,12 +213,16 @@ namespace BaseObjectSwapper
 					a_refr->SetDisabled(true);
 				}
 			}
+			if (modelSwap) {
+				TESModel* model = OBLIVION_CAST(a_refr->baseForm, TESForm, TESModel);
+				model->SetModelPath(modelPath.c_str());
+			}
 		}
 	}
 
 	bool Transform::IsValid() const
 	{
-		return location || rotation || refScale || refDisable;
+		return location || rotation || refScale || refDisable || modelSwap;
 	}
 
 	TransformData::TransformData(const Input& a_input) :

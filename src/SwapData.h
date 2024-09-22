@@ -27,12 +27,13 @@ namespace BaseObjectSwapper
 
 		bool operator==(Transform const& a_rhs) const
 		{
-			return location && a_rhs.location || rotation && a_rhs.rotation || refScale && a_rhs.refScale || refDisable && a_rhs.refDisable;
+			return location && a_rhs.location || rotation && a_rhs.rotation || refScale && a_rhs.refScale || refDisable && a_rhs.refDisable || modelSwap && a_rhs.modelSwap;
 		}
 
 	private:
 		[[nodiscard]] static RelData<NiPoint3> get_transform_from_string(const std::string& a_str, bool a_convertToRad = false);
 		[[nodiscard]] static MinMax<float>         get_scale_from_string(const std::string& a_str);
+		[[nodiscard]] static std::string         get_path_from_string(const std::string& a_str);
 
 		struct Input
 		{
@@ -52,6 +53,8 @@ namespace BaseObjectSwapper
 		std::optional<RelData<NiPoint3>> rotation{ std::nullopt };
 		std::optional<MinMax<float>>         refScale{ std::nullopt };
 		std::optional<bool>         refDisable{ std::nullopt };
+		std::optional<bool>         modelSwap{ std::nullopt };
+		std::string         modelPath;
 
 		bool useTrueRandom{ false };
 
