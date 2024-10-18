@@ -5,7 +5,7 @@ namespace BaseObjectSwapper
 {
 	struct LinkFormREFRImpl
 	{
-		static void __fastcall LinkFormHook(TESObjectREFR* a_ref, void* edx)
+		static void __fastcall LinkFormHookREFR(TESObjectREFR* a_ref, void* edx)
 		{
 			if (const auto base = a_ref->baseForm) {
 				Manager::GetSingleton()->LoadFormsOnce();
@@ -17,20 +17,21 @@ namespace BaseObjectSwapper
 					transformData->SetTransform(a_ref);
 				}
 			}
-			ThisStdCall(originalAddress, a_ref);
+			ThisStdCall(originalAddressREFR, a_ref);
 		}
-		static inline std::uint32_t originalAddress;
+		static inline std::uint32_t originalAddressREFR;
 
 		static void Install()
 		{
-			originalAddress = DetourVtable(0xA46CB0, reinterpret_cast<UInt32>(LinkFormHook)); // kVtbl_TESObjectREFR_LinkForm
+			originalAddressREFR = DetourVtable(0xA46C44 + (4 * 0x22), reinterpret_cast<UInt32>(LinkFormHookREFR)); // kVtbl_TESObjectREFR_LinkForm
+			//originalAddressREFR = DetourVtable(0xA46CB0, reinterpret_cast<UInt32>(LinkFormHookREFR)); // kVtbl_TESObjectREFR_LinkForm
 			_MESSAGE("Installed TESObjectREFR vtable hook");
 		}
 	};
 
 	struct LinkFormNPCImpl
 	{
-		static void __fastcall LinkFormHook(TESObjectREFR* a_ref, void* edx)
+		static void __fastcall LinkFormHookNPC(TESObjectREFR* a_ref, void* edx)
 		{
 			if (const auto base = a_ref->baseForm) {
 				Manager::GetSingleton()->LoadFormsOnce();
@@ -42,20 +43,20 @@ namespace BaseObjectSwapper
 					transformData->SetTransform(a_ref);
 				}
 			}
-			ThisStdCall(originalAddress, a_ref);
+			ThisStdCall(originalAddressNPC, a_ref);
 		}
-		static inline std::uint32_t originalAddress;
+		static inline std::uint32_t originalAddressNPC;
 
 		static void Install()
 		{
-			originalAddress = DetourVtable(0xA6FD08, reinterpret_cast<UInt32>(LinkFormHook)); // kVtbl_Character_LinkForm
+			originalAddressNPC = DetourVtable(0xA6FD08, reinterpret_cast<UInt32>(LinkFormHookNPC)); // kVtbl_Character_LinkForm
 			_MESSAGE("Installed Character vtable hook");
 		}
 	};
 
 	struct LinkFormCREAImpl
 	{
-		static void __fastcall LinkFormHook(TESObjectREFR* a_ref, void* edx)
+		static void __fastcall LinkFormHookCREA(TESObjectREFR* a_ref, void* edx)
 		{
 			if (const auto base = a_ref->baseForm) {
 				Manager::GetSingleton()->LoadFormsOnce();
@@ -67,13 +68,13 @@ namespace BaseObjectSwapper
 					transformData->SetTransform(a_ref);
 				}
 			}
-			ThisStdCall(originalAddress, a_ref);
+			ThisStdCall(originalAddressCREA, a_ref);
 		}
-		static inline std::uint32_t originalAddress;
+		static inline std::uint32_t originalAddressCREA;
 
 		static void Install()
 		{
-			originalAddress = DetourVtable(0xA71160, reinterpret_cast<UInt32>(LinkFormHook)); // kVtbl_Creature_LinkForm
+			originalAddressCREA = DetourVtable(0xA71160, reinterpret_cast<UInt32>(LinkFormHookCREA)); // kVtbl_Creature_LinkForm
 			_MESSAGE("Installed Creature vtable hook");
 		}
 	};

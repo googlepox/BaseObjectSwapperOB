@@ -1,4 +1,4 @@
-LIBRARY	"obse_plugin_example"
+LIBRARY	"BaseObjectSwapperOB"
 EXPORTS
 OBSEPlugin_Query
 OBSEPlugin_Load

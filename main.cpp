@@ -1,6 +1,5 @@
 #include "src/Hooks.h"
 #include "src/Manager.h"
-#include <src/SwapData.cpp>
 
 IDebugLog		gLog("BaseObjectSwapper.log");
 PluginHandle	g_pluginHandle = kPluginHandle_Invalid;
@@ -17,6 +16,93 @@ OBSEArrayVarInterface* g_arrayInterface{};
 OBSESerializationInterface* g_serializationInterface{};
 OBSEConsoleInterface* g_consoleInterface{};
 OBSEEventManagerInterface* g_eventInterface{};
+
+#define ENABLE_EXTRACT_ARGS_MACROS 1	// #define this as 0 if you prefer not to use this
+
+#if ENABLE_EXTRACT_ARGS_MACROS
+
+OBSEScriptInterface* g_scriptInterface = NULL;	// make sure you assign to this
+#define ExtractArgsEx(...) g_scriptInterface->ExtractArgsEx(__VA_ARGS__)
+#define ExtractFormatStringArgs(...) g_scriptInterface->ExtractFormatStringArgs(__VA_ARGS__)
+
+#endif
+#endif
+
+// Test command
+
+#if OBLIVION
+
+bool Cmd_SwapBase_Execute(COMMAND_ARGS)
+{
+
+	TESObjectREFR* baseObject;
+	TESObjectREFR* swapObject;
+
+	if (ExtractArgsEx(paramInfo, arg1, opcodeOffsetPtr, scriptObj, eventList, &baseObject, &swapObject)) {
+		
+		_MESSAGE("BOS: SwapBase called via script...");
+		//Console_Print("BOS: Swapping object...");
+
+		baseObject->baseForm = swapObject->baseForm;
+	}
+
+	return true;
+}
+
+static ParamInfo kParams_SwapBase[2] =
+{
+	{ "object reference", kParamType_ObjectRef, 0 },
+	{ "base form", kParamType_ObjectRef, 0 },
+};
+
+static CommandInfo kSwapBaseCommand =
+{
+	"SwapBase",
+	"",
+	0,
+	"Swap base objects",
+	0,
+	2,
+	kParams_SwapBase,
+	HANDLER(Cmd_SwapBase_Execute)
+};
+
+bool Cmd_SwapModel_Execute(COMMAND_ARGS)
+{
+
+	TESObjectREFR* baseObject;
+	std::string modelString;
+
+	if (ExtractArgsEx(paramInfo, arg1, opcodeOffsetPtr, scriptObj, eventList, &baseObject, &modelString)) {
+
+		_MESSAGE("BOS: SwapModel called via script...");
+		//Console_Print("BOS: Swapping object...");
+
+		TESModel* model = OBLIVION_CAST(baseObject->baseForm, TESForm, TESModel);
+		model->SetModelPath(modelString.c_str());
+	}
+
+	return true;
+}
+
+static ParamInfo kParams_SwapModel[2] =
+{
+	{ "object reference", kParamType_ObjectRef, 0 },
+	{ "model path", kParamType_String, 0 },
+};
+
+static CommandInfo kSwapModelCommand =
+{
+	"SwapModel",
+	"",
+	0,
+	"Swap base objects",
+	0,
+	2,
+	kParams_SwapModel,
+	HANDLER(Cmd_SwapModel_Execute)
+};
+
 #endif
 
 // This is a message handler for OBSE events
@@ -89,6 +175,11 @@ bool OBSEPlugin_Load(OBSEInterface* OBSE)
 		g_consoleInterface = static_cast<OBSEConsoleInterface*>(OBSE->QueryInterface(kInterface_Console));
 #endif
 	}
+
+	//OBSE->SetOpcodeBase(0x2B00);
+	//->RegisterCommand(&kSwapBaseCommand);
+	//OBSE->RegisterCommand(&kSwapModelCommand);
+
 	BaseObjectSwapper::Install();
 
 	return true;

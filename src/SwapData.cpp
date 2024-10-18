@@ -214,8 +214,10 @@ namespace BaseObjectSwapper
 				}
 			}
 			if (modelSwap) {
-				TESModel* model = OBLIVION_CAST(a_refr->baseForm, TESForm, TESModel);
-				model->SetModelPath(modelPath.c_str());
+				TESModel* model = OBLIVION_CAST(a_refr, TESForm, TESModel);
+				if (model && model->nifPath.m_data != modelPath.c_str()) {
+					model->SetModelPath(modelPath.c_str());
+				}
 			}
 		}
 	}
