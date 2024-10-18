@@ -91,8 +91,8 @@ namespace BaseObjectSwapper
 	{
 		_MESSAGE("-HOOKS-");
 		LinkFormREFRImpl::Install();
-		LinkFormNPCImpl::Install();
-		LinkFormCREAImpl::Install();
+		//LinkFormNPCImpl::Install();
+		//LinkFormCREAImpl::Install();
 		_MESSAGE("Installed all vtable hooks");
 
 	}
