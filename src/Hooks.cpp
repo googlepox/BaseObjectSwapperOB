@@ -23,8 +23,7 @@ namespace BaseObjectSwapper
 
 		static void Install()
 		{
-			originalAddressREFR = DetourVtable(0xA46C44 + (4 * 0x22), reinterpret_cast<UInt32>(LinkFormHookREFR)); // kVtbl_TESObjectREFR_LinkForm
-			//originalAddressREFR = DetourVtable(0xA46CB0, reinterpret_cast<UInt32>(LinkFormHookREFR)); // kVtbl_TESObjectREFR_LinkForm
+			originalAddressREFR = DetourVtable(0xA46CB0, reinterpret_cast<UInt32>(LinkFormHookREFR)); // kVtbl_TESObjectREFR_LinkForm
 			_MESSAGE("Installed TESObjectREFR vtable hook");
 		}
 	};

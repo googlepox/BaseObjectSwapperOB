@@ -150,9 +150,11 @@ namespace BaseObjectSwapper
 					refDisable = true;
 				}
 				else if (transformStr.contains("model")) {
-					_MESSAGE("transformStr: %s", transformStr.c_str());
 					modelSwap = true;
 					modelPath = get_path_from_string(transformStr);
+				}
+				else if (transformStr.contains("fireFlag")) {
+					turnOffFire = true;
 				}
 			}
 		}
@@ -160,7 +162,7 @@ namespace BaseObjectSwapper
 
 	void Transform::SetTransform(TESObjectREFR* a_refr) const
 	{
-		if (location || rotation || refScale || refDisable || modelSwap) {
+		if (location || rotation || refScale || refDisable || modelSwap || turnOffFire) {
 			Input input(useTrueRandom, a_refr->refID);
 			if (location) {
 				auto& [relative, minMax] = *location;
@@ -203,13 +205,7 @@ namespace BaseObjectSwapper
 				a_refr->scale = a_refr->scale * get_random_value(input, min, max);
 			}
 			if (refDisable) {
-				if (a_refr->baseExtraList.HasType(kExtraData_EnableStateParent) || a_refr->baseExtraList.HasType(kExtraData_EnableStateChildren)) {
-					//_MESSAGE("skipping disable as reference has EnableStateParent flag");
-				}
-				else if (a_refr->IsPersistent()) {
-					//_MESSAGE("skipping disable as reference is flagged as Persistent");
-				}
-				else {
+				if (!a_refr->baseExtraList.HasType(kExtraData_EnableStateParent) && !a_refr->baseExtraList.HasType(!kExtraData_EnableStateChildren)) {
 					a_refr->SetDisabled(true);
 				}
 			}
@@ -218,6 +214,9 @@ namespace BaseObjectSwapper
 				if (model && model->nifPath.m_data != modelPath.c_str()) {
 					model->SetModelPath(modelPath.c_str());
 				}
+			}
+			if (turnOffFire) {
+				a_refr->flags = turnOffFire ? (a_refr->flags | TESForm::kFormFlags_TurnOffFire) : (a_refr->flags & ~TESForm::kFormFlags_TurnOffFire);
 			}
 		}
 	}

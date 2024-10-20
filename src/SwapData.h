@@ -54,6 +54,7 @@ namespace BaseObjectSwapper
 		std::optional<MinMax<float>>         refScale{ std::nullopt };
 		std::optional<bool>         refDisable{ std::nullopt };
 		std::optional<bool>         modelSwap{ std::nullopt };
+		std::optional<bool>         turnOffFire{ std::nullopt };
 		std::string         modelPath;
 
 		bool useTrueRandom{ false };
