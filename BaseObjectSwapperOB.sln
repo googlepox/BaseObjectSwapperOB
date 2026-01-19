@@ -7,6 +7,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "common", "..\common\common.
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BaseObjectSwapperOB", "BaseObjectSwapperOB.vcxproj", "{D4DDA734-7E93-4581-8F82-32BB738F69FE}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "obse", "..\OBSE\obse\obse\obse.vcxproj", "{01B76B21-F851-436E-ACEA-64FA03BE8C59}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug - Attach Debugger|Win32 = Debug - Attach Debugger|Win32
@@ -61,6 +63,26 @@ Global
 		{D4DDA734-7E93-4581-8F82-32BB738F69FE}.Release|Win32.Build.0 = Release|Win32
 		{D4DDA734-7E93-4581-8F82-32BB738F69FE}.Stewie|Win32.ActiveCfg = Debug|Win32
 		{D4DDA734-7E93-4581-8F82-32BB738F69FE}.Stewie|Win32.Build.0 = Debug|Win32
+		{01B76B21-F851-436E-ACEA-64FA03BE8C59}.Debug - Attach Debugger|Win32.ActiveCfg = Release 1_2_0_416|Win32
+		{01B76B21-F851-436E-ACEA-64FA03BE8C59}.Debug - Attach Debugger|Win32.Build.0 = Release 1_2_0_416|Win32
+		{01B76B21-F851-436E-ACEA-64FA03BE8C59}.Debug CS|Win32.ActiveCfg = Release 1_2_0_416|Win32
+		{01B76B21-F851-436E-ACEA-64FA03BE8C59}.Debug CS|Win32.Build.0 = Release 1_2_0_416|Win32
+		{01B76B21-F851-436E-ACEA-64FA03BE8C59}.Debug ng|Win32.ActiveCfg = Release 1_2_0_416|Win32
+		{01B76B21-F851-436E-ACEA-64FA03BE8C59}.Debug ng|Win32.Build.0 = Release 1_2_0_416|Win32
+		{01B76B21-F851-436E-ACEA-64FA03BE8C59}.Debug|Win32.ActiveCfg = Debug 1_2_0_416|Win32
+		{01B76B21-F851-436E-ACEA-64FA03BE8C59}.Debug|Win32.Build.0 = Debug 1_2_0_416|Win32
+		{01B76B21-F851-436E-ACEA-64FA03BE8C59}.Release - No CrashRpt, Attach Debugger|Win32.ActiveCfg = Debug 1_2_0_416|Win32
+		{01B76B21-F851-436E-ACEA-64FA03BE8C59}.Release - No CrashRpt, Attach Debugger|Win32.Build.0 = Debug 1_2_0_416|Win32
+		{01B76B21-F851-436E-ACEA-64FA03BE8C59}.Release - Skip Dev Channel|Win32.ActiveCfg = Debug 1_2_0_416|Win32
+		{01B76B21-F851-436E-ACEA-64FA03BE8C59}.Release - Skip Dev Channel|Win32.Build.0 = Debug 1_2_0_416|Win32
+		{01B76B21-F851-436E-ACEA-64FA03BE8C59}.Release CS|Win32.ActiveCfg = Debug 1_2_0_416|Win32
+		{01B76B21-F851-436E-ACEA-64FA03BE8C59}.Release CS|Win32.Build.0 = Debug 1_2_0_416|Win32
+		{01B76B21-F851-436E-ACEA-64FA03BE8C59}.Release ng|Win32.ActiveCfg = Debug 1_2_0_416|Win32
+		{01B76B21-F851-436E-ACEA-64FA03BE8C59}.Release ng|Win32.Build.0 = Debug 1_2_0_416|Win32
+		{01B76B21-F851-436E-ACEA-64FA03BE8C59}.Release|Win32.ActiveCfg = Release 1_2_0_416|Win32
+		{01B76B21-F851-436E-ACEA-64FA03BE8C59}.Release|Win32.Build.0 = Release 1_2_0_416|Win32
+		{01B76B21-F851-436E-ACEA-64FA03BE8C59}.Stewie|Win32.ActiveCfg = Debug 1_2_0_416|Win32
+		{01B76B21-F851-436E-ACEA-64FA03BE8C59}.Stewie|Win32.Build.0 = Debug 1_2_0_416|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

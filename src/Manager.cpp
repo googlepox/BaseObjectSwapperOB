@@ -1,4 +1,5 @@
 #include "Manager.h"
+#include "lib/boost/trim.hpp"
 
 extern OBSEScriptInterface* g_script;
 
@@ -41,6 +42,390 @@ namespace BaseObjectSwapper
 			});
 	}
 
+	static bool HasKeywordCell(TESObjectCELL* a_cell, const FormIDStr& a_keyword, bool isExclusion)
+	{
+		if (a_cell)
+		{
+			std::string newKey = std::get<std::string>(a_keyword);
+			UInt32 cellID = a_cell->refID;
+			UInt32 newFormID = SwapData::GetFormID(newKey.c_str());
+			if (newFormID)
+			{
+				if (newFormID && ((newFormID == cellID) || (std::to_string(cellID).contains(std::to_string(newFormID)))))
+				{
+					return !isExclusion;
+				}
+				return isExclusion;
+			}
+			else if (newKey == "Dungeon")
+			{
+				if (a_cell->extraData.HasType(ExtraDataType::kExtraData_CellMusicType))
+				{
+					if (a_cell->extraData.GetByType(ExtraDataType::kExtraData_CellMusicType))
+					{
+						ExtraCellMusicType* extraData = OBLIVION_CAST(a_cell->extraData.GetByType(ExtraDataType::kExtraData_CellMusicType), BSExtraData, ExtraCellMusicType);
+						if (extraData && extraData->musicType == ExtraCellMusicType::kMusicType_Dungeon)
+						{
+							return !isExclusion;
+						}
+					}
+					
+				}
+				return isExclusion;
+			}
+			else
+			{
+				std::string editorID = (a_cell->GetEditorName());
+				std::transform(newKey.begin(), newKey.end(), newKey.begin(), tolower);
+				std::transform(editorID.begin(), editorID.end(), editorID.begin(), tolower);
+				std::string cStrKey = newKey.c_str();
+				std::string cStrEditorID = editorID.c_str();
+				if (cStrEditorID.find(cStrKey.c_str()) != std::string::npos)
+				{
+					return !isExclusion;
+				}
+				return isExclusion;
+			}
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	static bool HasKeywordWorldspace(TESObjectCELL* a_cell, const FormIDStr& a_keyword, bool isExclusion)
+	{
+		if (a_cell)
+		{
+			std::string newKey = std::get<std::string>(a_keyword);
+			UInt32 cellID = a_cell->worldSpace->refID;
+			UInt32 newFormID = SwapData::GetFormID(newKey.c_str());
+			if (newFormID)
+			{
+				if (newFormID && ((newFormID == cellID) || (std::to_string(cellID).contains(std::to_string(newFormID)))))
+				{
+					return !isExclusion;
+				}
+				return isExclusion;
+			}
+			else
+			{
+				std::string editorID = (a_cell->worldSpace->GetEditorName());
+				std::transform(newKey.begin(), newKey.end(), newKey.begin(), tolower);
+				std::transform(editorID.begin(), editorID.end(), editorID.begin(), tolower);
+				std::string cStrKey = newKey.c_str();
+				std::string cStrEditorID = editorID.c_str();
+				if (cStrEditorID.find(cStrKey.c_str()) != std::string::npos)
+				{
+					return !isExclusion;
+				}
+				return isExclusion;
+			}
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	static bool HasKeywordRegion(TESObjectCELL* a_cell, const FormIDStr& a_keyword, bool isExclusion)
+	{
+		if (a_cell)
+		{
+			ExtraRegionList* regionList = dynamic_cast<ExtraRegionList*>(a_cell->extraData.GetByType(kExtraData_RegionList));
+			TESRegionList* regions = regionList->regionList;
+			TESRegionList::Entry* regionPtr = &(regions->regionList);
+			bool found = false;
+			while (regionPtr != NULL)
+			{
+				UInt32 regionID = regionPtr->region->refID;
+				std::string newKey = std::get<std::string>(a_keyword);
+				UInt32 newFormID = SwapData::GetFormID(newKey.c_str());
+				if (newFormID)
+				{
+					if (newFormID && ((newFormID == regionID) || (std::to_string(regionID).contains(std::to_string(newFormID)))))
+					{
+						found = true;
+					}
+				}
+				else
+				{
+					std::string editorID = (regionPtr->region->GetEditorName());
+					std::transform(newKey.begin(), newKey.end(), newKey.begin(), tolower);
+					std::transform(editorID.begin(), editorID.end(), editorID.begin(), tolower);
+					std::string cStrKey = newKey.c_str();
+					std::string cStrEditorID = editorID.c_str();
+					if (cStrEditorID.find(cStrKey.c_str()) != std::string::npos)
+					{
+						found = true;
+					}
+				}
+				regionPtr = regionPtr->next;
+			}
+			if (found)
+			{
+				return !isExclusion;
+			}
+			return isExclusion;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	static bool HasKeywordEditorID(TESObjectREFR* ref, const FormIDStr& a_keyword, bool isExclusion)
+	{
+		if (ref)
+		{
+			std::string newKey = std::get<std::string>(a_keyword);
+			UInt32 refID = ref->baseForm->refID;
+			UInt32 newFormID = std::atoi(newKey.c_str());
+			if (newFormID)
+			{
+				if (newFormID && ((newFormID == refID)))
+				{
+					return !isExclusion;
+				}
+				return isExclusion;
+			}
+			else
+			{
+				std::string editorID;
+				if (ref->baseForm)
+				{
+					editorID = (ref->baseForm->GetEditorName());
+				}
+				else
+				{
+					editorID = (ref->GetEditorName());
+				}
+				std::transform(newKey.begin(), newKey.end(), newKey.begin(), tolower);
+				std::transform(editorID.begin(), editorID.end(), editorID.begin(), tolower);
+				std::string cStrKey = newKey.c_str();
+				std::string cStrEditorID = editorID.c_str();
+				if (cStrEditorID.find(cStrKey.c_str()) != std::string::npos)
+				{
+					return !isExclusion;
+				}
+				return isExclusion;
+			}
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	static bool HasKeywordName(TESObjectREFR* ref, const FormIDStr& a_keyword, bool isExclusion)
+	{
+		if (ref)
+		{
+			std::string newKey = std::get<std::string>(a_keyword);
+			std::string editorID;
+			if (ref->baseForm)
+			{
+				editorID = (ref->baseForm->GetFullName()->name.m_data);
+			}
+			else
+			{
+				editorID = (ref->GetFullName()->name.m_data);
+			}
+			std::transform(newKey.begin(), newKey.end(), newKey.begin(), tolower);
+			std::transform(editorID.begin(), editorID.end(), editorID.begin(), tolower);
+			std::string cStrKey = newKey.c_str();
+			std::string cStrEditorID = editorID.c_str();
+			if (cStrEditorID.find(cStrKey.c_str()) != std::string::npos)
+			{
+				return !isExclusion;
+			}
+			return isExclusion;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	static bool HasKeywordRace(TESObjectREFR* ref, const FormIDStr& a_keyword, bool isExclusion)
+	{
+		if (ref)
+		{
+			TESActorBase* actor = dynamic_cast<TESActorBase*>(ref->baseForm);
+			TESNPC* npc = dynamic_cast<TESNPC*>(actor);
+			std::string newKey = std::get<std::string>(a_keyword);
+			std::string editorID = (npc->race.race->GetEditorName());
+			UInt32 refID = npc->race.race->refID;
+			UInt32 newFormID = std::atoi(newKey.c_str());
+			if (newFormID)
+			{
+				if (newFormID && ((newFormID == refID) || (std::to_string(refID).contains(std::to_string(newFormID)))))
+				{
+					return !isExclusion;
+				}
+				return isExclusion;
+			}
+			else
+			{
+				std::string editorID = (ref->baseForm->GetEditorName());
+				std::transform(newKey.begin(), newKey.end(), newKey.begin(), tolower);
+				std::transform(editorID.begin(), editorID.end(), editorID.begin(), tolower);
+				std::string cStrKey = newKey.c_str();
+				std::string cStrEditorID = editorID.c_str();
+				if (cStrEditorID.find(cStrKey.c_str()) != std::string::npos)
+				{
+					return !isExclusion;
+				}
+				return isExclusion;
+			}
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	static bool HasKeywordFaction(TESObjectREFR* ref, const FormIDStr& a_keyword, bool isExclusion)
+	{
+		if (ref)
+		{
+			bool found = false;
+			TESActorBase* actor = dynamic_cast<TESActorBase*>(ref->baseForm);
+			TESNPC* npc = dynamic_cast<TESNPC*>(actor);
+			TESActorBaseData::FactionListEntry* entry = &npc->actorBaseData.factionList;
+			std::string newKey = std::get<std::string>(a_keyword);
+			while (entry && entry->data)
+			{
+				TESFaction* faction = entry->data->faction;
+				std::string editorID = faction->GetEditorName();
+				std::string refID = std::to_string(faction->refID).c_str();
+				std::transform(newKey.begin(), newKey.end(), newKey.begin(), tolower);
+				std::transform(editorID.begin(), editorID.end(), editorID.begin(), tolower);
+				std::string cStrKey = newKey.c_str();
+				std::string cStrEditorID = editorID.c_str();
+				if (cStrEditorID.find(cStrKey.c_str()) != std::string::npos)
+				{
+					found = true;
+				}
+				else if (refID.find(cStrKey.c_str()) != std::string::npos)
+				{
+					found = true;
+				}
+				entry = entry->Next();
+			}
+			if (found)
+			{
+				return !isExclusion;
+			}
+			return isExclusion;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	static bool HasKeywordClass(TESObjectREFR* ref, const FormIDStr& a_keyword, bool isExclusion)
+	{
+		if (ref)
+		{
+			TESActorBase* actor = dynamic_cast<TESActorBase*>(ref->baseForm);
+			TESNPC* npc = dynamic_cast<TESNPC*>(actor);
+			std::string newKey = std::get<std::string>(a_keyword);
+			std::string editorID = (npc->npcClass->GetEditorName());
+			UInt32 refID = npc->npcClass->refID;
+			UInt32 newFormID = std::atoi(newKey.c_str());
+			if (newFormID)
+			{
+				if (newFormID && ((newFormID == refID) || (std::to_string(refID).contains(std::to_string(newFormID)))))
+				{
+					return !isExclusion;
+				}
+				return isExclusion;
+			}
+			else
+			{
+				std::string editorID = (ref->baseForm->GetEditorName());
+				std::transform(newKey.begin(), newKey.end(), newKey.begin(), tolower);
+				std::transform(editorID.begin(), editorID.end(), editorID.begin(), tolower);
+				std::string cStrKey = newKey.c_str();
+				std::string cStrEditorID = editorID.c_str();
+				if (cStrEditorID.find(cStrKey.c_str()) != std::string::npos)
+				{
+					return !isExclusion;
+				}
+				return isExclusion;
+			}
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	static bool HasKeywordItem(TESObjectREFR* ref, const FormIDStr& a_keyword, bool isExclusion)
+	{
+		if (ref)
+		{
+			bool found = false;
+			TESActorBase* actor = dynamic_cast<TESActorBase*>(ref->baseForm);
+			Character* npc = dynamic_cast<Character*>(actor);
+			TESContainer* cont = ref->GetContainer();
+			TESContainer::Entry* entry = &cont->list;
+			while (entry && entry->data)
+			{
+				TESForm* form = entry->data->type;
+				std::string editorID = form->GetEditorName();
+				UInt32 refID = form->refID;
+				std::string newKey = std::get<std::string>(a_keyword);
+				std::transform(newKey.begin(), newKey.end(), newKey.begin(), tolower);
+				std::transform(editorID.begin(), editorID.end(), editorID.begin(), tolower);
+				std::string cStrKey = newKey.c_str();
+				std::string cStrEditorID = editorID.c_str();
+				if (cStrEditorID.find(cStrKey.c_str()) != std::string::npos)
+				{
+					found = true;
+				}
+				else if (refID == atoi(cStrKey.c_str()))
+				{
+					found = true;
+				}
+				entry = entry->Next();
+			}
+			if (found)
+			{
+				return !isExclusion;
+			}
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	static bool HasKeywordMod(TESObjectREFR* ref, const FormIDStr& a_keyword, bool isExclusion)
+	{
+		if (ref)
+		{
+			std::string newKey = std::get<std::string>(a_keyword);
+			UInt8 modIndex = ref->baseForm->GetModIndex();
+			std::string modName = (*g_dataHandler)->GetNthModName(modIndex);
+			std::transform(newKey.begin(), newKey.end(), newKey.begin(), tolower);
+			std::transform(modName.begin(), modName.end(), modName.begin(), tolower);
+			std::string cStrKey = newKey.c_str();
+			std::string cStrModName = modName.c_str();
+			if (cStrModName.find(cStrKey.c_str()) != std::string::npos)
+			{
+				return !isExclusion;
+			}
+			return isExclusion;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
 	bool HasKeyword(TESObjectCELL* a_cell, const std::string& a_keyword)
 	{
 		if (a_cell) {
@@ -59,44 +444,105 @@ namespace BaseObjectSwapper
 			return false;
 		}
 
-	}
-
-	bool ConditionalInput::IsValid(const FormIDStr& a_data) const
+	}bool ConditionalInput::IsValid(const FormIDStr& a_data, TESObjectREFR* refToCheck) const
 	{
-		if (std::holds_alternative<RE::FormID>(a_data)) {
-			if (const auto form = LookupFormByID(std::get<RE::FormID>(a_data))) {
-				switch (form->GetFormType()) {
-				case kFormType_Region:
-				{
-					if (const auto region = (form)) {
-						if (const auto regionList = dynamic_cast<ExtraRegionList*>(currentCell ? currentCell->extraData.GetByType(kExtraData_RegionList) : nullptr)) {
-							if (const auto list = (regionList->regionList))
-							{
-								TESRegionList::Entry* regionPtr = &(list->regionList);
-								while (regionPtr != NULL)
-								{
-									if (regionPtr->region == region)
-									{
-										return true;
-									}
-									regionPtr = regionPtr->next;
-								}
-							}
-						}
-					}
-					return false;
-				}
-				case kFormType_Cell:
-				{
-					return currentCell == form;
-				}
-				default:
-					break;
-				}
+		if (refToCheck)
+		{
+			FormIDStr newData = a_data;
+			UInt32 formID;
+			std::string formString = std::get<std::string>(a_data);
+			boost::trim(formString);
+			bool isExclusion = false;
+			if (formString.find('-') != std::string::npos)
+			{
+				std::string::iterator end_pos = std::remove(formString.begin(), formString.end(), '-');
+				formString.erase(end_pos, formString.end());
+				isExclusion = true;
+			}
+			if (!formString.contains(':'))
+			{
+				return HasKeywordEditorID(refToCheck, formString, isExclusion);;
+			}
+			auto conditionType = string::split(formString, ":");
+			boost::trim(conditionType[0]);
+			boost::trim(conditionType[1]);
+			formID = SwapData::GetFormID(conditionType[1]);
+			if (formID)
+			{
+				newData = std::to_string(formID);
+			}
+			else
+			{
+				newData = conditionType[1];
+			}
+			if (conditionType[0] == "Cell")
+			{
+				return HasKeywordCell(refToCheck->parentCell, newData, isExclusion);
+			}
+			else if (conditionType[0] == "EditorID")
+			{
+				return HasKeywordEditorID(refToCheck, newData, isExclusion);
+			}
+			else if (conditionType[0] == "Race")
+			{
+				return HasKeywordRace(refToCheck, newData, isExclusion);
+			}
+			else if (conditionType[0] == "Class")
+			{
+				return HasKeywordClass(refToCheck, newData, isExclusion);
+			}
+			else if (conditionType[0] == "Faction")
+			{
+				return HasKeywordFaction(refToCheck, newData, isExclusion);
+			}
+			else if (conditionType[0] == "Item")
+			{
+				return HasKeywordItem(refToCheck, newData, isExclusion);
+			}
+			else if (conditionType[0] == "Name")
+			{
+				return HasKeywordName(refToCheck, newData, isExclusion);
+			}
+			else if (conditionType[0] == "Mod")
+			{
+				return HasKeywordMod(refToCheck, newData, isExclusion);
+			}
+			else
+			{
+				return HasKeyword(refToCheck->parentCell, formString);
 			}
 		}
-		else {
-			return HasKeyword(currentCell, std::get<std::string>(a_data));
+		return false;
+	}
+
+	bool ConditionalInput::IsValidAll(const FormIDStr& a_data, TESObjectREFR* refToCheck) const
+	{
+		if (refToCheck)
+		{
+			std::string conditionStr = std::get<std::string>(a_data);
+			std::vector<bool> resultVec;
+			if (conditionStr.contains("ALL")) return true;
+			if (conditionStr.contains("&"))
+			{
+				auto conditions = string::split(conditionStr, "&");
+				for (const auto& condition : conditions)
+				{
+					resultVec.push_back(IsValid(condition, refToCheck));
+				}
+				for (const auto& result : resultVec)
+				{
+					if (!result)
+					{
+						return false;
+					}
+				}
+				return true;
+			}
+			else
+			{
+				return IsValid(conditionStr, refToCheck);
+			}
+
 		}
 		return false;
 	}
@@ -145,10 +591,16 @@ namespace BaseObjectSwapper
 			sections.sort(CSimpleIniA::Entry::LoadOrder());
 
 			constexpr auto push_filter = [](const std::string& a_condition, std::vector<FormIDStr>& a_processedFilters) {
-				if (const auto processedID = SwapData::GetFormID(a_condition); processedID != 0) {
+				if (a_condition.contains('&') || a_condition.contains(':') || a_condition.contains("ALL"))
+				{
+					a_processedFilters.emplace_back(a_condition);
+				}
+				else if (const auto processedID = SwapData::GetFormID(a_condition); processedID != 0)
+				{
 					a_processedFilters.emplace_back(processedID);
 				}
-				else {
+				else
+				{
 					_ERROR("\t\tFilter  [%s] INFO - unable to find form, treating filter as string", a_condition.c_str());
 					a_processedFilters.emplace_back(a_condition);
 				}
@@ -272,7 +724,7 @@ namespace BaseObjectSwapper
 		if (const auto it = swapFormsConditional.find(static_cast<std::uint32_t>(a_base->refID)); it != swapFormsConditional.end()) {
 			const ConditionalInput input(a_ref, a_base);
 			const auto             result = std::ranges::find_if(it->second, [&](const auto& a_data) {
-				return input.IsValid(a_data.first);
+				return input.IsValidAll(a_data.first, a_ref);
 				});
 
 			if (result != it->second.end()) {
@@ -292,7 +744,7 @@ namespace BaseObjectSwapper
 		if (const auto it = transformsConditional.find(a_base->refID); it != transformsConditional.end()) {
 			const ConditionalInput input(a_ref, a_base);
 			const auto             result = std::ranges::find_if(it->second, [&](const auto& a_data) {
-				return input.IsValid(a_data.first);
+				return input.IsValidAll(a_data.first, a_ref);
 				});
 
 			if (result != it->second.end()) {

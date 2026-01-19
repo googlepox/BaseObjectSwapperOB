@@ -59,7 +59,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>C:\Users\brand\Downloads\Mods\Oblivion Mods\srell4_040;$(SolutionDir);$(SolutionDir)\..;$(SolutionDir)\..\obse\obse;$(SolutionDir)\..\obse\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\brand\Downloads\Mods\Oblivion Mods\srell4_040;$(SolutionDir)\lib;$(SolutionDir);$(SolutionDir)\..\xOBSE\obse\obse;$(SolutionDir)\..\xOBSE\obse;$(SolutionDir)\..\boost_1_86_0;$(SolutionDir)\..\xOBSE;$(SolutionDir)\..;$(SolutionDir)\..\obse\obse;$(SolutionDir)\..\obse\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;OBLIVION_VERSION=0x010201A0;OBLIVION;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -110,23 +110,11 @@
       <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
       <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
     </ProjectReference>
+    <ProjectReference Include="..\OBSE\obse\obse\obse.vcxproj">
+      <Project>{01b76b21-f851-436e-acea-64fa03be8c59}</Project>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\obse\obse\GameActorValues.cpp" />
-    <ClCompile Include="..\obse\obse\GameAPI.cpp" />
-    <ClCompile Include="..\obse\obse\GameBSExtraData.cpp" />
-    <ClCompile Include="..\obse\obse\GameData.cpp" />
-    <ClCompile Include="..\obse\obse\GameExtraData.cpp" />
-    <ClCompile Include="..\obse\obse\GameForms.cpp" />
-    <ClCompile Include="..\obse\obse\GameObjects.cpp" />
-    <ClCompile Include="..\obse\obse\GameTasks.cpp" />
-    <ClCompile Include="..\obse\obse\GameTypes.cpp" />
-    <ClCompile Include="..\obse\obse\NiAPI.cpp" />
-    <ClCompile Include="..\obse\obse\NiNodes.cpp" />
-    <ClCompile Include="..\obse\obse\NiRTTI.cpp" />
-    <ClCompile Include="..\obse\obse\Script.cpp" />
-    <ClCompile Include="..\obse\obse\Utilities.cpp" />
-    <ClCompile Include="..\obse\obse_common\SafeWrite.cpp" />
     <ClCompile Include="dllmain.c">
       <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
       </ForcedIncludeFiles>
@@ -139,23 +127,6 @@
     <ClCompile Include="src\SwapData.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\obse\obse\GameActorValues.h" />
-    <ClInclude Include="..\obse\obse\GameAPI.h" />
-    <ClInclude Include="..\obse\obse\GameBSExtraData.h" />
-    <ClInclude Include="..\obse\obse\GameData.h" />
-    <ClInclude Include="..\obse\obse\GameExtraData.h" />
-    <ClInclude Include="..\obse\obse\GameForms.h" />
-    <ClInclude Include="..\obse\obse\GameObjects.h" />
-    <ClInclude Include="..\obse\obse\GameTasks.h" />
-    <ClInclude Include="..\obse\obse\GameTypes.h" />
-    <ClInclude Include="..\obse\obse\NiAPI.h" />
-    <ClInclude Include="..\obse\obse\NiNodes.h" />
-    <ClInclude Include="..\obse\obse\NiRTTI.h" />
-    <ClInclude Include="..\obse\obse\ParamInfos.h" />
-    <ClInclude Include="..\obse\obse\PluginAPI.h" />
-    <ClInclude Include="..\obse\obse\Script.h" />
-    <ClInclude Include="..\obse\obse\Utilities.h" />
-    <ClInclude Include="..\obse\obse_common\SafeWrite.h" />
     <ClInclude Include="lib\detail\SimpleIni.h" />
     <ClInclude Include="lib\detail\XoshiroCpp.hpp" />
     <ClInclude Include="lib\distribution.hpp" />
@@ -172,7 +143,6 @@
     <ClInclude Include="src\SwapData.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\obse\obse\GameRTTI_1_2_416.inl" />
     <None Include="exports.def" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

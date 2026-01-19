@@ -35,8 +35,8 @@ OBSEScriptInterface* g_scriptInterface = NULL;	// make sure you assign to this
 bool Cmd_SwapBase_Execute(COMMAND_ARGS)
 {
 
-	TESObjectREFR* baseObject;
-	TESObjectREFR* swapObject;
+	TESObjectREFR* baseObject = NULL;
+	TESObjectREFR* swapObject = NULL;
 
 	if (ExtractArgsEx(paramInfo, arg1, opcodeOffsetPtr, scriptObj, eventList, &baseObject, &swapObject)) {
 		
@@ -44,6 +44,10 @@ bool Cmd_SwapBase_Execute(COMMAND_ARGS)
 		//Console_Print("BOS: Swapping object...");
 
 		baseObject->baseForm = swapObject->baseForm;
+		baseObject->Update3D();
+	}
+	else {
+		_MESSAGE("BOS: Failed to extract args");
 	}
 
 	return true;
@@ -167,7 +171,7 @@ bool OBSEPlugin_Load(OBSEInterface* OBSE)
 	{
 #if OBLIVION
 		// script and function-related interfaces
-		g_script = static_cast<OBSEScriptInterface*>(OBSE->QueryInterface(kInterface_Script));
+		g_scriptInterface = static_cast<OBSEScriptInterface*>(OBSE->QueryInterface(kInterface_Script));
 		g_stringInterface = static_cast<OBSEStringVarInterface*>(OBSE->QueryInterface(kInterface_StringVar));
 		g_arrayInterface = static_cast<OBSEArrayVarInterface*>(OBSE->QueryInterface(kInterface_ArrayVar));
 		g_eventInterface = static_cast<OBSEEventManagerInterface*>(OBSE->QueryInterface(kInterface_EventManager));
@@ -177,7 +181,7 @@ bool OBSEPlugin_Load(OBSEInterface* OBSE)
 	}
 
 	//OBSE->SetOpcodeBase(0x2B00);
-	//->RegisterCommand(&kSwapBaseCommand);
+	//OBSE->RegisterCommand(&kSwapBaseCommand);
 	//OBSE->RegisterCommand(&kSwapModelCommand);
 
 	BaseObjectSwapper::Install();

@@ -78,6 +78,31 @@ namespace BaseObjectSwapper
 		}
 	};
 
+	struct GetModelPathREFRImpl
+	{
+		static void __fastcall GetModelPathREFR(TESObjectREFR* a_ref, void* edx)
+		{
+			if (const auto base = a_ref->baseForm) {
+				Manager::GetSingleton()->LoadFormsOnce();
+				const auto& [swapBase, transformData] = Manager::GetSingleton()->GetSwapData(a_ref, base);
+				if (swapBase && swapBase != base) {
+					a_ref->baseForm = swapBase;
+				}
+				if (transformData != std::nullopt) {
+					transformData->SetTransform(a_ref);
+				}
+			}
+			ThisStdCall(originalAddressREFR, a_ref);
+		}
+		static inline std::uint32_t originalAddressREFR;
+
+		static void Install()
+		{
+			originalAddressREFR = DetourVtable(0xA71160, reinterpret_cast<UInt32>(GetModelPathREFR)); // kVtbl_Creature_LinkForm
+			_MESSAGE("Installed GetModelPath hook");
+		}
+	};
+
 	// Credits to lStewieAl
 	[[nodiscard]] __declspec(noinline) UInt32 __stdcall DetourVtable(UInt32 addr, UInt32 dst)
 	{

@@ -6,13 +6,13 @@
 #include <unordered_set>
 #include <unordered_map>
 
-#include "PluginAPI.h"
-#include "GameAPI.h"
-#include "GameObjects.h"
-#include "GameData.h"
-#include "GameExtraData.h"
+#include "obse/PluginAPI.h"
+#include "obse/GameAPI.h"
+#include "obse/GameObjects.h"
+#include "obse/GameData.h"
+#include "obse/GameExtraData.h"
 #include "obse_common/SafeWrite.h"
-#include "Utilities.h"
+#include "obse/Utilities.h"
 
 #include <common/IDebugLog.h>
 
