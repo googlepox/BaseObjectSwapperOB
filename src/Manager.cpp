@@ -448,68 +448,111 @@ namespace BaseObjectSwapper
 	{
 		if (refToCheck)
 		{
-			FormIDStr newData = a_data;
-			UInt32 formID;
-			std::string formString = std::get<std::string>(a_data);
-			boost::trim(formString);
-			bool isExclusion = false;
-			if (formString.find('-') != std::string::npos)
+			if (std::holds_alternative<std::string>(a_data))
 			{
-				std::string::iterator end_pos = std::remove(formString.begin(), formString.end(), '-');
-				formString.erase(end_pos, formString.end());
-				isExclusion = true;
-			}
-			if (!formString.contains(':'))
-			{
-				return HasKeywordEditorID(refToCheck, formString, isExclusion);;
-			}
-			auto conditionType = string::split(formString, ":");
-			boost::trim(conditionType[0]);
-			boost::trim(conditionType[1]);
-			formID = SwapData::GetFormID(conditionType[1]);
-			if (formID)
-			{
-				newData = std::to_string(formID);
+				FormIDStr newData = a_data;
+				UInt32 formID;
+				std::string formString = std::get<std::string>(a_data);
+				boost::trim(formString);
+				bool isExclusion = false;
+				if (formString.find('-') != std::string::npos)
+				{
+					std::string::iterator end_pos = std::remove(formString.begin(), formString.end(), '-');
+					formString.erase(end_pos, formString.end());
+					isExclusion = true;
+				}
+				if (!formString.contains(':'))
+				{
+					return HasKeywordEditorID(refToCheck, formString, isExclusion);;
+				}
+				auto conditionType = string::split(formString, ":");
+				boost::trim(conditionType[0]);
+				boost::trim(conditionType[1]);
+				formID = SwapData::GetFormID(conditionType[1]);
+				if (formID)
+				{
+					newData = std::to_string(formID);
+				}
+				else
+				{
+					newData = conditionType[1];
+				}
+				if (conditionType[0] == "Cell")
+				{
+					return HasKeywordCell(refToCheck->parentCell, newData, isExclusion);
+				}
+				else if (conditionType[0] == "EditorID")
+				{
+					return HasKeywordEditorID(refToCheck, newData, isExclusion);
+				}
+				else if (conditionType[0] == "Race")
+				{
+					return HasKeywordRace(refToCheck, newData, isExclusion);
+				}
+				else if (conditionType[0] == "Class")
+				{
+					return HasKeywordClass(refToCheck, newData, isExclusion);
+				}
+				else if (conditionType[0] == "Faction")
+				{
+					return HasKeywordFaction(refToCheck, newData, isExclusion);
+				}
+				else if (conditionType[0] == "Item")
+				{
+					return HasKeywordItem(refToCheck, newData, isExclusion);
+				}
+				else if (conditionType[0] == "Name")
+				{
+					return HasKeywordName(refToCheck, newData, isExclusion);
+				}
+				else if (conditionType[0] == "Mod")
+				{
+					return HasKeywordMod(refToCheck, newData, isExclusion);
+				}
+				else
+				{
+					return HasKeyword(refToCheck->parentCell, formString);
+				}
 			}
 			else
 			{
-				newData = conditionType[1];
-			}
-			if (conditionType[0] == "Cell")
-			{
-				return HasKeywordCell(refToCheck->parentCell, newData, isExclusion);
-			}
-			else if (conditionType[0] == "EditorID")
-			{
-				return HasKeywordEditorID(refToCheck, newData, isExclusion);
-			}
-			else if (conditionType[0] == "Race")
-			{
-				return HasKeywordRace(refToCheck, newData, isExclusion);
-			}
-			else if (conditionType[0] == "Class")
-			{
-				return HasKeywordClass(refToCheck, newData, isExclusion);
-			}
-			else if (conditionType[0] == "Faction")
-			{
-				return HasKeywordFaction(refToCheck, newData, isExclusion);
-			}
-			else if (conditionType[0] == "Item")
-			{
-				return HasKeywordItem(refToCheck, newData, isExclusion);
-			}
-			else if (conditionType[0] == "Name")
-			{
-				return HasKeywordName(refToCheck, newData, isExclusion);
-			}
-			else if (conditionType[0] == "Mod")
-			{
-				return HasKeywordMod(refToCheck, newData, isExclusion);
-			}
-			else
-			{
-				return HasKeyword(refToCheck->parentCell, formString);
+				if (std::holds_alternative<uint32_t>(a_data))
+				{
+					if (const auto form = LookupFormByID(std::get<uint32_t>(a_data)))
+					{
+						switch (form->GetFormType())
+						{
+						case kFormType_Region:
+						{
+							if (const auto region = (form))
+							{
+								if (const auto regionList = dynamic_cast<ExtraRegionList*>(currentCell ? currentCell->extraData.GetByType(kExtraData_RegionList) : nullptr))
+								{
+									if (const auto list = (regionList->regionList))
+									{
+										TESRegionList::Entry* regionPtr = &(list->regionList);
+										while (regionPtr != NULL)
+										{
+											if (regionPtr->region == region)
+											{
+												return true;
+											}
+											regionPtr = regionPtr->next;
+										}
+									}
+								}
+							}
+							return false;
+						}
+						case kFormType_Cell:
+						{
+							return currentCell == form;
+						}
+						default:
+							break;
+						}
+					}
+				}
 			}
 		}
 		return false;
@@ -519,28 +562,35 @@ namespace BaseObjectSwapper
 	{
 		if (refToCheck)
 		{
-			std::string conditionStr = std::get<std::string>(a_data);
-			std::vector<bool> resultVec;
-			if (conditionStr.contains("ALL")) return true;
-			if (conditionStr.contains("&"))
+			if (std::holds_alternative<std::string>(a_data))
 			{
-				auto conditions = string::split(conditionStr, "&");
-				for (const auto& condition : conditions)
+				std::string conditionStr = std::get<std::string>(a_data);
+				std::vector<bool> resultVec;
+				if (conditionStr.contains("ALL")) return true;
+				if (conditionStr.contains("&"))
 				{
-					resultVec.push_back(IsValid(condition, refToCheck));
-				}
-				for (const auto& result : resultVec)
-				{
-					if (!result)
+					auto conditions = string::split(conditionStr, "&");
+					for (const auto& condition : conditions)
 					{
-						return false;
+						resultVec.push_back(IsValid(condition, refToCheck));
 					}
+					for (const auto& result : resultVec)
+					{
+						if (!result)
+						{
+							return false;
+						}
+					}
+					return true;
 				}
-				return true;
+				else
+				{
+					return IsValid(conditionStr, refToCheck);
+				}
 			}
 			else
 			{
-				return IsValid(conditionStr, refToCheck);
+				return IsValid(a_data, refToCheck);
 			}
 
 		}
