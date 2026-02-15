@@ -98,6 +98,8 @@ namespace BaseObjectSwapper
 		if (a_cell)
 		{
 			std::string newKey = std::get<std::string>(a_keyword);
+			if (!a_cell || !a_cell->worldSpace)
+				return false;
 			UInt32 cellID = a_cell->worldSpace->refID;
 			UInt32 newFormID = SwapData::GetFormID(newKey.c_str());
 			if (newFormID)
@@ -509,6 +511,14 @@ namespace BaseObjectSwapper
 				{
 					return HasKeywordMod(refToCheck, newData, isExclusion);
 				}
+				else if (conditionType[0] == "Worldspace")
+				{
+					return HasKeywordWorldspace(refToCheck->parentCell, newData, isExclusion);
+				}
+				else if (conditionType[0] == "Region")
+				{
+					return HasKeywordRegion(refToCheck->parentCell, newData, isExclusion);
+				}
 				else
 				{
 					return HasKeyword(refToCheck->parentCell, formString);
@@ -608,16 +618,19 @@ namespace BaseObjectSwapper
 	{
 		_MESSAGE("-INI-");
 
-		const std::filesystem::path bosFolder{ R"(Data\BaseObjectSwapper)" };
+		std::string bosFolderPath = R"(Data\OBSE\Plugins\BaseObjectSwapper)";
+
+		const std::filesystem::path bosFolder{ bosFolderPath };
+
 		if (!exists(bosFolder)) {
 			_WARNING("BOS folder not found...");
 			return;
 		}
 
-		const auto configs = dist::get_configs(R"(Data\BaseObjectSwapper)");
+		std::vector<std::string> configs = dist::get_configs(bosFolderPath);
 
 		if (configs.empty()) {
-			_WARNING("No .ini files were found in Data\\BaseObjectSwapper folder, aborting...");
+			_WARNING("No .ini files were found in Data\\OBSE\\Plugins\\BaseObjectSwapper folder, falling back to Data\\BaseObjectSwapper...");
 			return;
 		}
 
@@ -765,7 +778,7 @@ namespace BaseObjectSwapper
 	void Manager::PrintConflicts() const
 	{
 		if (hasConflicts) {
-			Console_Print(std::format("[BOS] Conflicts found, check po3_BaseObjectSwapper.log in {} for more info\n", GetOblivionDirectory()).c_str());
+			Console_Print(std::format("[BOS] Conflicts found, check BaseObjectSwapper.log in {} for more info\n", GetOblivionDirectory()).c_str());
 		}
 	}
 
