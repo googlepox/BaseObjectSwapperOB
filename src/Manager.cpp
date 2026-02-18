@@ -113,7 +113,9 @@ namespace BaseObjectSwapper
 			}
 			else
 			{
-				std::string editorID = EditorIDMapper::ReverseLookup(a_cell->worldSpace->refID);
+				const char* worldspaceEditorID = EditorIDMapper::ReverseLookup(a_cell->worldSpace->refID);
+				if (!worldspaceEditorID) return false;
+				std::string editorID = worldspaceEditorID;
 				std::transform(newKey.begin(), newKey.end(), newKey.begin(), tolower);
 				std::transform(editorID.begin(), editorID.end(), editorID.begin(), tolower);
 				std::string cStrKey = newKey.c_str();
