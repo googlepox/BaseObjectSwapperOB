@@ -76,7 +76,9 @@ namespace BaseObjectSwapper
 			}
 			else
 			{
-				std::string editorID = EditorIDMapper::ReverseLookup(a_cell->refID);
+				const char* id = EditorIDMapper::ReverseLookup(a_cell->refID);
+				if (!id) return false;
+				std::string editorID = id;
 				std::transform(newKey.begin(), newKey.end(), newKey.begin(), tolower);
 				std::transform(editorID.begin(), editorID.end(), editorID.begin(), tolower);
 				std::string cStrKey = newKey.c_str();
@@ -155,7 +157,9 @@ namespace BaseObjectSwapper
 				}
 				else
 				{
-					std::string editorID = EditorIDMapper::ReverseLookup(regionPtr->region->refID);
+					const char* id = EditorIDMapper::ReverseLookup(regionPtr->region->refID);
+					if (!id) return false;
+					std::string editorID = id;
 					std::transform(newKey.begin(), newKey.end(), newKey.begin(), tolower);
 					std::transform(editorID.begin(), editorID.end(), editorID.begin(), tolower);
 					std::string cStrKey = newKey.c_str();
@@ -197,13 +201,18 @@ namespace BaseObjectSwapper
 			else
 			{
 				std::string editorID;
+				const char* id;
 				if (ref->baseForm)
 				{
-					std::string editorID = EditorIDMapper::ReverseLookup(ref->baseForm->refID);
+					id = EditorIDMapper::ReverseLookup(ref->baseForm->refID);
+					if (!id) return false;
+					std::string editorID = id;
 				}
 				else
 				{
-					std::string editorID = EditorIDMapper::ReverseLookup(ref->refID);
+					id = EditorIDMapper::ReverseLookup(ref->refID);
+					if (!id) return false;
+					std::string editorID = id;
 				}
 				std::transform(newKey.begin(), newKey.end(), newKey.begin(), tolower);
 				std::transform(editorID.begin(), editorID.end(), editorID.begin(), tolower);
@@ -245,162 +254,6 @@ namespace BaseObjectSwapper
 				return !isExclusion;
 			}
 			return isExclusion;
-		}
-		else
-		{
-			return false;
-		}
-	}
-
-	static bool HasKeywordRace(TESObjectREFR* ref, const FormIDStr& a_keyword, bool isExclusion)
-	{
-		if (ref)
-		{
-			TESActorBase* actor = dynamic_cast<TESActorBase*>(ref->baseForm);
-			TESNPC* npc = dynamic_cast<TESNPC*>(actor);
-			std::string newKey = std::get<std::string>(a_keyword);
-			std::string editorID = EditorIDMapper::ReverseLookup(npc->race.race->refID);
-			UInt32 refID = npc->race.race->refID;
-			UInt32 newFormID = std::atoi(newKey.c_str());
-			if (newFormID)
-			{
-				if (newFormID && ((newFormID == refID) || (std::to_string(refID).contains(std::to_string(newFormID)))))
-				{
-					return !isExclusion;
-				}
-				return isExclusion;
-			}
-			else
-			{
-				std::string editorID = EditorIDMapper::ReverseLookup(ref->baseForm->refID);
-				std::transform(newKey.begin(), newKey.end(), newKey.begin(), tolower);
-				std::transform(editorID.begin(), editorID.end(), editorID.begin(), tolower);
-				std::string cStrKey = newKey.c_str();
-				std::string cStrEditorID = editorID.c_str();
-				if (cStrEditorID.find(cStrKey.c_str()) != std::string::npos)
-				{
-					return !isExclusion;
-				}
-				return isExclusion;
-			}
-		}
-		else
-		{
-			return false;
-		}
-	}
-
-	static bool HasKeywordFaction(TESObjectREFR* ref, const FormIDStr& a_keyword, bool isExclusion)
-	{
-		if (ref)
-		{
-			bool found = false;
-			TESActorBase* actor = dynamic_cast<TESActorBase*>(ref->baseForm);
-			TESNPC* npc = dynamic_cast<TESNPC*>(actor);
-			TESActorBaseData::FactionListEntry* entry = &npc->actorBaseData.factionList;
-			std::string newKey = std::get<std::string>(a_keyword);
-			while (entry && entry->data)
-			{
-				TESFaction* faction = entry->data->faction;
-				std::string editorID = EditorIDMapper::ReverseLookup(faction->refID);
-				std::string refID = std::to_string(faction->refID).c_str();
-				std::transform(newKey.begin(), newKey.end(), newKey.begin(), tolower);
-				std::transform(editorID.begin(), editorID.end(), editorID.begin(), tolower);
-				std::string cStrKey = newKey.c_str();
-				std::string cStrEditorID = editorID.c_str();
-				if (cStrEditorID.find(cStrKey.c_str()) != std::string::npos)
-				{
-					found = true;
-				}
-				else if (refID.find(cStrKey.c_str()) != std::string::npos)
-				{
-					found = true;
-				}
-				entry = entry->Next();
-			}
-			if (found)
-			{
-				return !isExclusion;
-			}
-			return isExclusion;
-		}
-		else
-		{
-			return false;
-		}
-	}
-
-	static bool HasKeywordClass(TESObjectREFR* ref, const FormIDStr& a_keyword, bool isExclusion)
-	{
-		if (ref)
-		{
-			TESActorBase* actor = dynamic_cast<TESActorBase*>(ref->baseForm);
-			TESNPC* npc = dynamic_cast<TESNPC*>(actor);
-			std::string newKey = std::get<std::string>(a_keyword);
-			std::string editorID = EditorIDMapper::ReverseLookup(npc->npcClass->refID);
-			UInt32 refID = npc->npcClass->refID;
-			UInt32 newFormID = std::atoi(newKey.c_str());
-			if (newFormID)
-			{
-				if (newFormID && ((newFormID == refID) || (std::to_string(refID).contains(std::to_string(newFormID)))))
-				{
-					return !isExclusion;
-				}
-				return isExclusion;
-			}
-			else
-			{
-				std::string editorID = EditorIDMapper::ReverseLookup(ref->baseForm->refID);
-				std::transform(newKey.begin(), newKey.end(), newKey.begin(), tolower);
-				std::transform(editorID.begin(), editorID.end(), editorID.begin(), tolower);
-				std::string cStrKey = newKey.c_str();
-				std::string cStrEditorID = editorID.c_str();
-				if (cStrEditorID.find(cStrKey.c_str()) != std::string::npos)
-				{
-					return !isExclusion;
-				}
-				return isExclusion;
-			}
-		}
-		else
-		{
-			return false;
-		}
-	}
-
-	static bool HasKeywordItem(TESObjectREFR* ref, const FormIDStr& a_keyword, bool isExclusion)
-	{
-		if (ref)
-		{
-			bool found = false;
-			TESActorBase* actor = dynamic_cast<TESActorBase*>(ref->baseForm);
-			Character* npc = dynamic_cast<Character*>(actor);
-			TESContainer* cont = ref->GetContainer();
-			TESContainer::Entry* entry = &cont->list;
-			while (entry && entry->data)
-			{
-				TESForm* form = entry->data->type;
-				std::string editorID = EditorIDMapper::ReverseLookup(form->refID);
-				UInt32 refID = form->refID;
-				std::string newKey = std::get<std::string>(a_keyword);
-				std::transform(newKey.begin(), newKey.end(), newKey.begin(), tolower);
-				std::transform(editorID.begin(), editorID.end(), editorID.begin(), tolower);
-				std::string cStrKey = newKey.c_str();
-				std::string cStrEditorID = editorID.c_str();
-				if (cStrEditorID.find(cStrKey.c_str()) != std::string::npos)
-				{
-					found = true;
-				}
-				else if (refID == atoi(cStrKey.c_str()))
-				{
-					found = true;
-				}
-				entry = entry->Next();
-			}
-			if (found)
-			{
-				return !isExclusion;
-			}
 		}
 		else
 		{
@@ -512,22 +365,6 @@ namespace BaseObjectSwapper
 				else if (conditionType[0] == "EditorID")
 				{
 					return HasKeywordEditorID(refToCheck, newData, isExclusion);
-				}
-				else if (conditionType[0] == "Race")
-				{
-					return HasKeywordRace(refToCheck, newData, isExclusion);
-				}
-				else if (conditionType[0] == "Class")
-				{
-					return HasKeywordClass(refToCheck, newData, isExclusion);
-				}
-				else if (conditionType[0] == "Faction")
-				{
-					return HasKeywordFaction(refToCheck, newData, isExclusion);
-				}
-				else if (conditionType[0] == "Item")
-				{
-					return HasKeywordItem(refToCheck, newData, isExclusion);
 				}
 				else if (conditionType[0] == "Name")
 				{
