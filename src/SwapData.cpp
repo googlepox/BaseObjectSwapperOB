@@ -1,4 +1,5 @@
 #include "SwapData.h"
+#include "EditorIDMapper/EditorIDMapperAPI.h"
 
 #define DEGTORAD 0.01745329252f
 
@@ -261,9 +262,15 @@ namespace BaseObjectSwapper
 				return form->refID;
 			}
 		}
-		/*if (const auto form = GetFormByID(a_str.c_str())) {
-			return form->refID;
-		} */
+
+		if (!EditorIDMapper::IsReady())
+		{
+			_WARNING("EditorIDMapper not ready, cannot resolve '%s'", a_str.c_str());
+			return 0;
+		}
+		if (const auto form = EditorIDMapper::Lookup(a_str.c_str())) {
+			return form;
+		}
 		return 0;
 	}
 

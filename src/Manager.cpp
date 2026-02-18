@@ -1,4 +1,5 @@
 #include "Manager.h"
+#include "EditorIDMapper/EditorIDMapperAPI.h"
 #include "lib/boost/trim.hpp"
 
 extern OBSEScriptInterface* g_script;
@@ -75,7 +76,7 @@ namespace BaseObjectSwapper
 			}
 			else
 			{
-				std::string editorID = (a_cell->GetEditorName());
+				std::string editorID = EditorIDMapper::ReverseLookup(a_cell->refID);
 				std::transform(newKey.begin(), newKey.end(), newKey.begin(), tolower);
 				std::transform(editorID.begin(), editorID.end(), editorID.begin(), tolower);
 				std::string cStrKey = newKey.c_str();
@@ -112,7 +113,7 @@ namespace BaseObjectSwapper
 			}
 			else
 			{
-				std::string editorID = (a_cell->worldSpace->GetEditorName());
+				std::string editorID = EditorIDMapper::ReverseLookup(a_cell->worldSpace->refID);
 				std::transform(newKey.begin(), newKey.end(), newKey.begin(), tolower);
 				std::transform(editorID.begin(), editorID.end(), editorID.begin(), tolower);
 				std::string cStrKey = newKey.c_str();
@@ -152,7 +153,7 @@ namespace BaseObjectSwapper
 				}
 				else
 				{
-					std::string editorID = (regionPtr->region->GetEditorName());
+					std::string editorID = EditorIDMapper::ReverseLookup(regionPtr->region->refID);
 					std::transform(newKey.begin(), newKey.end(), newKey.begin(), tolower);
 					std::transform(editorID.begin(), editorID.end(), editorID.begin(), tolower);
 					std::string cStrKey = newKey.c_str();
@@ -196,11 +197,11 @@ namespace BaseObjectSwapper
 				std::string editorID;
 				if (ref->baseForm)
 				{
-					editorID = (ref->baseForm->GetEditorName());
+					std::string editorID = EditorIDMapper::ReverseLookup(ref->baseForm->refID);
 				}
 				else
 				{
-					editorID = (ref->GetEditorName());
+					std::string editorID = EditorIDMapper::ReverseLookup(ref->refID);
 				}
 				std::transform(newKey.begin(), newKey.end(), newKey.begin(), tolower);
 				std::transform(editorID.begin(), editorID.end(), editorID.begin(), tolower);
@@ -256,7 +257,7 @@ namespace BaseObjectSwapper
 			TESActorBase* actor = dynamic_cast<TESActorBase*>(ref->baseForm);
 			TESNPC* npc = dynamic_cast<TESNPC*>(actor);
 			std::string newKey = std::get<std::string>(a_keyword);
-			std::string editorID = (npc->race.race->GetEditorName());
+			std::string editorID = EditorIDMapper::ReverseLookup(npc->race.race->refID);
 			UInt32 refID = npc->race.race->refID;
 			UInt32 newFormID = std::atoi(newKey.c_str());
 			if (newFormID)
@@ -269,7 +270,7 @@ namespace BaseObjectSwapper
 			}
 			else
 			{
-				std::string editorID = (ref->baseForm->GetEditorName());
+				std::string editorID = EditorIDMapper::ReverseLookup(ref->baseForm->refID);
 				std::transform(newKey.begin(), newKey.end(), newKey.begin(), tolower);
 				std::transform(editorID.begin(), editorID.end(), editorID.begin(), tolower);
 				std::string cStrKey = newKey.c_str();
@@ -299,7 +300,7 @@ namespace BaseObjectSwapper
 			while (entry && entry->data)
 			{
 				TESFaction* faction = entry->data->faction;
-				std::string editorID = faction->GetEditorName();
+				std::string editorID = EditorIDMapper::ReverseLookup(faction->refID);
 				std::string refID = std::to_string(faction->refID).c_str();
 				std::transform(newKey.begin(), newKey.end(), newKey.begin(), tolower);
 				std::transform(editorID.begin(), editorID.end(), editorID.begin(), tolower);
@@ -334,7 +335,7 @@ namespace BaseObjectSwapper
 			TESActorBase* actor = dynamic_cast<TESActorBase*>(ref->baseForm);
 			TESNPC* npc = dynamic_cast<TESNPC*>(actor);
 			std::string newKey = std::get<std::string>(a_keyword);
-			std::string editorID = (npc->npcClass->GetEditorName());
+			std::string editorID = EditorIDMapper::ReverseLookup(npc->npcClass->refID);
 			UInt32 refID = npc->npcClass->refID;
 			UInt32 newFormID = std::atoi(newKey.c_str());
 			if (newFormID)
@@ -347,7 +348,7 @@ namespace BaseObjectSwapper
 			}
 			else
 			{
-				std::string editorID = (ref->baseForm->GetEditorName());
+				std::string editorID = EditorIDMapper::ReverseLookup(ref->baseForm->refID);
 				std::transform(newKey.begin(), newKey.end(), newKey.begin(), tolower);
 				std::transform(editorID.begin(), editorID.end(), editorID.begin(), tolower);
 				std::string cStrKey = newKey.c_str();
@@ -377,7 +378,7 @@ namespace BaseObjectSwapper
 			while (entry && entry->data)
 			{
 				TESForm* form = entry->data->type;
-				std::string editorID = form->GetEditorName();
+				std::string editorID = EditorIDMapper::ReverseLookup(form->refID);
 				UInt32 refID = form->refID;
 				std::string newKey = std::get<std::string>(a_keyword);
 				std::transform(newKey.begin(), newKey.end(), newKey.begin(), tolower);
@@ -406,6 +407,29 @@ namespace BaseObjectSwapper
 	}
 
 	static bool HasKeywordMod(TESObjectREFR* ref, const FormIDStr& a_keyword, bool isExclusion)
+	{
+		if (ref)
+		{
+			std::string newKey = std::get<std::string>(a_keyword);
+			UInt8 modIndex = ref->baseForm->GetModIndex();
+			std::string modName = (*g_dataHandler)->GetNthModName(modIndex);
+			std::transform(newKey.begin(), newKey.end(), newKey.begin(), tolower);
+			std::transform(modName.begin(), modName.end(), modName.begin(), tolower);
+			std::string cStrKey = newKey.c_str();
+			std::string cStrModName = modName.c_str();
+			if (cStrModName.find(cStrKey.c_str()) != std::string::npos)
+			{
+				return !isExclusion;
+			}
+			return isExclusion;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	static bool HasKeywordRotation(TESObjectREFR* ref, const FormIDStr& a_keyword, bool isExclusion)
 	{
 		if (ref)
 		{

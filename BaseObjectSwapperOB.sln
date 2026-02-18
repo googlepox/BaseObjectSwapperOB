@@ -7,7 +7,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "common", "..\common\common.
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BaseObjectSwapperOB", "BaseObjectSwapperOB.vcxproj", "{D4DDA734-7E93-4581-8F82-32BB738F69FE}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "obse", "..\OBSE\obse\obse\obse.vcxproj", "{01B76B21-F851-436E-ACEA-64FA03BE8C59}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "obse", "..\xOBSE\obse\obse\obse.vcxproj", "{01B76B21-F851-436E-ACEA-64FA03BE8C59}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

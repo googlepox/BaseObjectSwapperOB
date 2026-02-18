@@ -1,5 +1,6 @@
 #include "src/Hooks.h"
 #include "src/Manager.h"
+#include "EditorIDMapper/EditorIDMapperAPI.h"
 
 IDebugLog		gLog("BaseObjectSwapper.log");
 PluginHandle	g_pluginHandle = kPluginHandle_Invalid;
@@ -115,7 +116,9 @@ void MessageHandler(OBSEMessagingInterface::Message* msg)
 {
 	switch (msg->type)
 	{
-	case OBSEMessagingInterface::kMessage_GameInitialized: break;
+	case OBSEMessagingInterface::kMessage_PreLoadGame:
+		BaseObjectSwapper::Install();
+		break;
 	default: break;
 	}
 }
@@ -184,7 +187,8 @@ bool OBSEPlugin_Load(OBSEInterface* OBSE)
 	//OBSE->RegisterCommand(&kSwapBaseCommand);
 	//OBSE->RegisterCommand(&kSwapModelCommand);
 
-	BaseObjectSwapper::Install();
+	EditorIDMapper::Init(g_messagingInterface, g_pluginHandle);
+	
 
 	return true;
 }

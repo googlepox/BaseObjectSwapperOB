@@ -110,7 +110,7 @@
       <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
       <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
     </ProjectReference>
-    <ProjectReference Include="..\OBSE\obse\obse\obse.vcxproj">
+    <ProjectReference Include="..\xOBSE\obse\obse\obse.vcxproj">
       <Project>{01b76b21-f851-436e-acea-64fa03be8c59}</Project>
     </ProjectReference>
   </ItemGroup>
@@ -127,6 +127,7 @@
     <ClCompile Include="src\SwapData.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\EditorIDMapper\EditorIDMapperAPI.h" />
     <ClInclude Include="lib\detail\SimpleIni.h" />
     <ClInclude Include="lib\detail\XoshiroCpp.hpp" />
     <ClInclude Include="lib\distribution.hpp" />
