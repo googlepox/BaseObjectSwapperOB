@@ -110,8 +110,6 @@ static CommandInfo kSwapModelCommand =
 
 #endif
 
-// This is a message handler for OBSE events
-// With this, plugins can listen to messages such as whenever the game loads
 void MessageHandler(OBSEMessagingInterface::Message* msg)
 {
 	switch (msg->type)
@@ -121,6 +119,11 @@ void MessageHandler(OBSEMessagingInterface::Message* msg)
 		break;
 	default: break;
 	}
+}
+
+void UnifiedMessageHandler(OBSEMessagingInterface::Message* msg)
+{
+	EditorIDMapper::MessageHandler(msg);
 }
 
 bool OBSEPlugin_Query(const OBSEInterface* OBSE, PluginInfo* info)
@@ -187,6 +190,7 @@ bool OBSEPlugin_Load(OBSEInterface* OBSE)
 	//OBSE->RegisterCommand(&kSwapBaseCommand);
 	//OBSE->RegisterCommand(&kSwapModelCommand);
 
+	g_messagingInterface->RegisterListener(g_pluginHandle, nullptr, MessageHandler);
 	EditorIDMapper::Init(g_messagingInterface, g_pluginHandle);
 	
 
