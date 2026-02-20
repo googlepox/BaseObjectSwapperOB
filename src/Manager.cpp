@@ -1,5 +1,6 @@
 #include "Manager.h"
 #include "EditorIDMapper/EditorIDMapperAPI.h"
+#include "OBSEKeywords/KeywordAPI.h"
 #include "lib/boost/trim.hpp"
 
 extern OBSEScriptInterface* g_script;
@@ -307,6 +308,23 @@ namespace BaseObjectSwapper
 		}
 	}
 
+	static bool HasKeywordKeyword(TESObjectREFR* ref, const FormIDStr& a_keyword, bool isExclusion)
+	{
+		if (ref)
+		{
+			std::string keyword = std::get<std::string>(a_keyword);
+			if (KeywordAPI::HasKeyword(ref->refID, keyword.c_str()) || KeywordAPI::HasKeyword(ref->baseForm->refID, keyword.c_str()))
+			{
+				return !isExclusion;
+			}
+			return isExclusion;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
 	bool HasKeyword(TESObjectCELL* a_cell, const std::string& a_keyword)
 	{
 		if (a_cell) {
@@ -381,6 +399,10 @@ namespace BaseObjectSwapper
 				else if (conditionType[0] == "Region")
 				{
 					return HasKeywordRegion(refToCheck->parentCell, newData, isExclusion);
+				}
+				else if (conditionType[0] == "Keyword")
+				{
+					return HasKeywordKeyword(refToCheck, newData, isExclusion);
 				}
 				else
 				{

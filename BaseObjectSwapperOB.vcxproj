@@ -128,6 +128,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\EditorIDMapper\EditorIDMapperAPI.h" />
+    <ClInclude Include="..\OBSEKeywords\KeywordAPI.h" />
     <ClInclude Include="lib\detail\SimpleIni.h" />
     <ClInclude Include="lib\detail\XoshiroCpp.hpp" />
     <ClInclude Include="lib\distribution.hpp" />

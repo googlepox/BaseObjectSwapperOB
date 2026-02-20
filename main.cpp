@@ -1,6 +1,7 @@
 #include "src/Hooks.h"
 #include "src/Manager.h"
 #include "EditorIDMapper/EditorIDMapperAPI.h"
+#include "OBSEKeywords/KeywordAPI.h"
 
 IDebugLog		gLog("BaseObjectSwapper.log");
 PluginHandle	g_pluginHandle = kPluginHandle_Invalid;
@@ -124,6 +125,7 @@ void MessageHandler(OBSEMessagingInterface::Message* msg)
 void UnifiedMessageHandler(OBSEMessagingInterface::Message* msg)
 {
 	EditorIDMapper::MessageHandler(msg);
+	KeywordAPI::MessageHandler(msg);
 }
 
 bool OBSEPlugin_Query(const OBSEInterface* OBSE, PluginInfo* info)
@@ -190,8 +192,9 @@ bool OBSEPlugin_Load(OBSEInterface* OBSE)
 	//OBSE->RegisterCommand(&kSwapBaseCommand);
 	//OBSE->RegisterCommand(&kSwapModelCommand);
 
-	g_messagingInterface->RegisterListener(g_pluginHandle, nullptr, MessageHandler);
+	g_messagingInterface->RegisterListener(g_pluginHandle, nullptr, UnifiedMessageHandler);
 	EditorIDMapper::Init(g_messagingInterface, g_pluginHandle);
+	KeywordAPI::Init(g_messagingInterface, g_pluginHandle);
 	
 
 	return true;
