@@ -111,21 +111,26 @@ static CommandInfo kSwapModelCommand =
 
 #endif
 
-void MessageHandler(OBSEMessagingInterface::Message* msg)
-{
-	switch (msg->type)
-	{
-	case OBSEMessagingInterface::kMessage_PreLoadGame:
-		BaseObjectSwapper::Install();
-		break;
-	default: break;
-	}
-}
+
 
 void UnifiedMessageHandler(OBSEMessagingInterface::Message* msg)
 {
 	EditorIDMapper::MessageHandler(msg);
 	KeywordAPI::MessageHandler(msg);
+}
+
+void MessageHandler(OBSEMessagingInterface::Message* msg)
+{
+	switch (msg->type)
+	{
+	case OBSEMessagingInterface::kMessage_PostLoad:
+		g_messagingInterface->RegisterListener(g_pluginHandle, nullptr, UnifiedMessageHandler);
+		break;
+	case OBSEMessagingInterface::kMessage_PreLoadGame:
+		BaseObjectSwapper::Install();
+		break;
+	default: break;
+	}
 }
 
 bool OBSEPlugin_Query(const OBSEInterface* OBSE, PluginInfo* info)
@@ -192,7 +197,7 @@ bool OBSEPlugin_Load(OBSEInterface* OBSE)
 	//OBSE->RegisterCommand(&kSwapBaseCommand);
 	//OBSE->RegisterCommand(&kSwapModelCommand);
 
-	g_messagingInterface->RegisterListener(g_pluginHandle, nullptr, UnifiedMessageHandler);
+	
 	EditorIDMapper::Init(g_messagingInterface, g_pluginHandle);
 	KeywordAPI::Init(g_messagingInterface, g_pluginHandle);
 	
